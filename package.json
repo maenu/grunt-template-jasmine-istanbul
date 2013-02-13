@@ -1,7 +1,7 @@
 {
   "name": "grunt-template-jasmine-istanbul",
   "description": "Code coverage template mix-in for grunt-contrib-jasmine, using istanbul",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "keywords": [
     "grunt",
     "template",
@@ -15,7 +15,7 @@
     "type": "git",
     "url": "https://github.com/maenu/grunt-template-jasmine-istanbul.git"
   },
-  "main": "src/main/js/template-jasmine-istanbul.js",
+  "main": "src/main/js/template.js",
   "dependencies": {
     "istanbul": "~0.1.30"
   },
