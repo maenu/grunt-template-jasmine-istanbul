@@ -1,0 +1,27 @@
+{
+  "name": "grunt-template-jasmine-istanbul",
+  "description": "Template mix-in for code coverage report generation with istanbul",
+  "version": "0.1.0",
+  "keywords": [
+    "grunt",
+    "template",
+    "jasmine",
+    "istanbul"
+  ],
+  "author": {
+    "name": "Manuel Leuenberger"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maenu/grunt-template-jasmine-istanbul.git"
+  },
+  "main": "src/main/js/template-jasmine-istanbul.js",
+  "dependencies": {
+    "istanbul": "~0.1.30"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.0rc7",
+    "grunt-contrib-jasmine": "~0.3.1",
+    "grunt-contrib-nodeunit": "~0.1.1"
+  }
+}
