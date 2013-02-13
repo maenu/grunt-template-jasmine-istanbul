@@ -5,6 +5,8 @@
  */
 
 var REPORTER = __dirname + '/reporter.js';
+var DEFAULT_TEMPLATE = 'node_modules/grunt-contrib-jasmine/tasks/jasmine/'
+		+ 'templates/DefaultRunner.tmpl';
 var path = require('path');
 var istanbul = require('istanbul');
 
@@ -35,6 +37,9 @@ exports.process = function (grunt, task, context) {
 	// use template option to mix in coverage
 	var template = context.options.template;
 	context.options = context.options.templateOptions || {};
+	if (!template) {
+		template = DEFAULT_TEMPLATE;
+	}
 	if (template.process) {
 		return template.process(grunt, task, context);
 	} else {

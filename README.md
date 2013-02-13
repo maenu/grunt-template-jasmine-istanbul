@@ -25,13 +25,13 @@ The directory path where to store the coverage report.
 
 ### templateOptions.template
 Type: `String` `Object`
-Mandatory.
+Default: jasmine's default template
 
 The template to mix-in coverage.
 
 ### templateOptions.templateOptions
 Type: `Object`
-Optional.
+Default: `undefined`
 
 The options to pass to the mixed-in template.
 
@@ -48,7 +48,6 @@ grunt.initConfig({
 			templateOptions: {
 				coverage: 'bin/coverage/coverage.json',
 				report: 'bin/coverage',
-				template: 'node_modules/grunt-contrib-jasmine/tasks/jasmine/templates/DefaultRunner.tmpl'
 			}
 		}
 	}

@@ -29,13 +29,7 @@ function getContext () {
 			reporters: ['reporter.js'],
 			start: ['start.js']
 		},
-		options: {
-			template: {
-				process: function () {
-					return '';
-				}
-			}
-		}
+		options: {}
 	};
 }
 
@@ -140,6 +134,20 @@ exports['template'] = {
 			var expected = 'if (typeof __coverage__ === \'undefined\') '
 					+ '{ __coverage__ = {}; }';
 			test.equal(found, expected, 'should be instrumented');
+			test.done();
+		}
+	},
+	'noTemplate': {
+		'setUp': function (callback) {
+			this.processed = this.template.process(grunt, this.task,
+					this.context);
+			callback();
+		},
+		'shouldRender': function (test) {
+			this.expected = grunt.util._.template(
+					grunt.file.read(DEFAULT_TEMPLATE), this.context);
+			test.equal(this.processed, this.expected,
+					'should render default template');
 			test.done();
 		}
 	},
