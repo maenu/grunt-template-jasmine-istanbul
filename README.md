@@ -35,6 +35,9 @@ The options to pass to the mixed-in template.
 
 ## Sample usage
 
+Have a look at
+[this example](https://github.com/maenu/grunt-template-jasmine-istanbul-example).
+
 ```js
 // Example configuration
 grunt.initConfig({
