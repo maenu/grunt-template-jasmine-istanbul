@@ -1,6 +1,6 @@
 {
   "name": "grunt-template-jasmine-istanbul",
-  "description": "Template mix-in for code coverage report generation with istanbul",
+  "description": "Code coverage template mix-in for grunt-contrib-jasmine, using istanbul",
   "version": "0.1.0",
   "keywords": [
     "grunt",
