@@ -13,12 +13,7 @@ var DEFAULT_TEMPLATE = 'node_modules/grunt-contrib-jasmine/tasks/jasmine/'
 var grunt = require('grunt');
 var path = require('path');
 var istanbul = require('istanbul');
-var instrumenter = new istanbul.Instrumenter({
-	noCompact: true
-});
-var reporter = istanbul.Report.create('html', {
-	dir: 'bin/coverage'
-});
+var instrumenter = new istanbul.Instrumenter();
 var collector = new istanbul.Collector();
 
 function getContext () {
@@ -67,9 +62,11 @@ exports['template'] = {
 		callback();
 	},
 	'tearDown': function (callback) {
-		// write report and delete instrumented template
+		// write coverage data and delete instrumented template
 		collector.add(__coverage__);
-		reporter.writeReport(collector, true);
+		grunt.file.write(grunt.config.process(
+				'<%= meta.bin.coverage %>/coverage-template.json'),
+				JSON.stringify(collector.getFinalCoverage()));
 		grunt.file.delete('src/main/js/template-instrumented.js');
 		callback();
 	},

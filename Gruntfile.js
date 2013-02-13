@@ -8,30 +8,58 @@ module.exports = function(grunt) {
 			},
 			bin: {
 				coverage: 'bin/coverage'
+			},
+			temp: {
+				integration: '.grunt/integration'
 			}
 		},
 		nodeunit: {
 			template: '<%= meta.src.test %>/js/template.js',
-			reporter: '<%= meta.src.test %>/js/reporter.js'
+			reporter: '<%= meta.src.test %>/js/reporter.js',
+			integration: '<%= meta.src.test %>/js/integration.js',
 		},
 		jasmine: {
-			coverage: {
-				src: [],
+			integration: {
+				src: ['<%= meta.src.test %>/js/Generator.js'],
 				options: {
-					specs: [],
+					specs: ['<%= meta.src.test %>/js/GeneratorTest.js'],
 					template: require('./src/main/js/template.js'),
 					templateOptions: {
-						coverage: '<%= meta.bin.coverage %>/coverage.json',
-						report: '<%= meta.bin.coverage %>',
-						template: 'node_modules/grunt-contrib-jasmine/tasks/jasmine/templates/DefaultRunner.tmpl'
+						coverage: '<%= meta.temp.integration %>/coverage.json',
+						report: '<%= meta.temp.integration %>',
+						template: '<%= meta.src.test %>/html/integration.tmpl',
+						templateOptions: {
+							helpers: ['<%= meta.src.test %>/js/helper.js']
+						}
 					}
 				}
 			}
+		},
+		clean: {
+			temp: ['.grunt'],
+			bin: ['bin']
 		}
 	});
 	
+	grunt.registerTask('report', 'Write coverage report', function () {
+		var istanbul = require('istanbul');
+		var collector = new istanbul.Collector();
+		var reporter = istanbul.Report.create('html', {
+			dir: grunt.config.process('<%= meta.bin.coverage %>')
+		});
+		grunt.file.expand(grunt.config.process('<%= meta.bin.coverage %>/coverage-*.json')).forEach(function (file) {
+			collector.add(grunt.file.readJSON(file));
+		});
+		reporter.writeReport(collector, true);
+	});
+	
+	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-jasmine');
 	grunt.loadNpmTasks('grunt-contrib-nodeunit');
 	
-	grunt.registerTask('coverage', ['jasmine:coverage']);
+	grunt.registerTask('test:template', ['nodeunit:template']);
+	grunt.registerTask('test:reporter', ['nodeunit:reporter']);
+	grunt.registerTask('test:integration', ['clean:temp', 'jasmine:integration', 'nodeunit:integration']);
+	grunt.registerTask('test', ['test:template', 'test:reporter', 'test:integration']);
+	grunt.registerTask('test:coverage', ['clean:bin', 'test', 'report']);
 };
