@@ -1,8 +1,6 @@
 Code coverage template mix-in for grunt-contrib-jasmine, using istanbul
 -----------------------------------------
 
-**This template is not yet published on npm**
-
 ## Installation
 
 ```
