@@ -3,6 +3,8 @@ __coverage__ = {
 		path: './src/test/js/helper.js',
 		s: {},
 		b: {},
-		f: {}
+		f: {},
+		branchMap: {},
+		fnMap: {}
 	}
 };
