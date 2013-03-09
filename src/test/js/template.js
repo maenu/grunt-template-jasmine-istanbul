@@ -120,14 +120,14 @@ exports['template'] = {
 		'shouldIncludeReporter': function (test) {
 			test.equal(this.context.scripts.reporters.length, 2,
 					'should have added 1 reporter');
-			test.equal(this.context.scripts.reporters[0],
-					path.join(__dirname, '../../main/js/reporter.js'),
+			test.equal(this.context.scripts.reporters[0].replace(/\\/g,'/'),
+					path.join(__dirname, '../../main/js/reporter.js').replace(/\\/g,'/'),
 					'should be the coverage reporter');
 			test.done();
 		},
 		'shouldInstrumentSource': function (test) {
 			test.equal(this.context.scripts.src.length, 1, 'should have 1 src');
-			test.equal(this.context.scripts.src[0], TEMP + '/' + SRC,
+			test.equal(this.context.scripts.src[0].replace(/\\/g,'/'), (TEMP + '/' + SRC).replace(/\\/g,'/'),
 					'should store instrumented in temp directory');
 			var instrumented = this.context.scripts.src[0];
 			var found = grunt.file.read(instrumented).split('\n')[0];
