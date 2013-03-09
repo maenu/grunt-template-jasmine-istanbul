@@ -19,15 +19,15 @@ var collector = new istanbul.Collector();
 function getContext () {
 	return {
 		temp: TEMP,
-		css: ['style.css'],
+		css: ['a.css'],
 		scripts: {
-			jasmine: ['jasmine.js'],
-			helpers: ['helper.js'],
+			jasmine: ['b.js'],
+			helpers: ['c.js'],
 			specs: [],
 			src: [],
-			vendor: ['vendor.js'],
-			reporters: ['reporter.js'],
-			start: ['start.js']
+			vendor: ['d.js'],
+			reporters: ['e.js'],
+			start: ['f.js']
 		},
 		options: {}
 	};

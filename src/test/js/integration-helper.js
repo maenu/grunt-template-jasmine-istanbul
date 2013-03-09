@@ -1,6 +1,6 @@
 __coverage__ = {
-	helper: {
-		path: './src/test/js/helper.js',
+	'integration-helper': {
+		path: './src/test/js/integration-helper.js',
 		s: {},
 		b: {},
 		f: {},

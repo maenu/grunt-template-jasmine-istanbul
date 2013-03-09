@@ -13,11 +13,13 @@ module.exports = function(grunt) {
 				integration: '.grunt/integration'
 			}
 		},
+		// test template functionality
 		nodeunit: {
 			template: '<%= meta.src.test %>/js/template.js',
 			reporter: '<%= meta.src.test %>/js/reporter.js',
 			integration: '<%= meta.src.test %>/js/integration.js',
 		},
+		// test common use-case
 		jasmine: {
 			integration: {
 				src: ['<%= meta.src.test %>/js/Generator.js'],
@@ -29,7 +31,7 @@ module.exports = function(grunt) {
 						report: '<%= meta.temp.integration %>',
 						template: '<%= meta.src.test %>/html/integration.tmpl',
 						templateOptions: {
-							helpers: ['<%= meta.src.test %>/js/helper.js']
+							helpers: ['<%= meta.src.test %>/js/integration-helper.js']
 						}
 					}
 				}

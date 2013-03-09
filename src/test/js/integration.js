@@ -12,7 +12,8 @@ exports['integration'] = {
 				'jasmine.integration.options.templateOptions.coverage');
 		test.ok(grunt.file.exists(file), 'should have written coverage.json');
 		var coverage = grunt.file.readJSON(file);
-		test.ok(coverage.helper, 'should have added helper to coverage');
+		test.ok(coverage['integration-helper'],
+				'should have added helper to coverage');
 		test.done();
 	},
 	'report': {
