@@ -16,13 +16,27 @@ Mandatory.
 The file path where to store the `coverage.json`.
 
 ### templateOptions.report
-Type: `String`
+Type: `String | Object | Array`
 Mandatory.
 
-The directory path where to store the coverage report.
+If a `String` is given, it will be used as the path where a HTML report is generated.
+If an `Object` is given, it must have the properties `type` and `options`, where `type` is a `String` and `options` an `Object`.
+`type` and `options` are used to create the report by passing it to `istanbul`s [`Report.create(type, options)`](http://gotwarlost.github.com/istanbul/public/apidocs/classes/Report.html).
+For example, if you want to generate a Cobertura report at `bin/coverage/cobertura`, use this:
+
+````js
+report: {
+	type: 'cobertura',
+	options: {
+		dir: 'bin/coverage/cobertura'
+	}
+}
+````
+
+If an `Array` is given, it must consist of `Object`s of the form just described.
 
 ### templateOptions.template
-Type: `String` `Object`
+Type: `String | Object`
 Default: jasmine's default template
 
 The template to mix-in coverage.
@@ -42,13 +56,15 @@ Have a look at
 // Example configuration
 grunt.initConfig({
 	jasmine: {
-		coverage: ['src/main/js/*.js'],
-		options: {
-			specs: ['src/test/js/*.js'],
-			template: require('grunt-template-jasmine-istanbul'),
-			templateOptions: {
-				coverage: 'bin/coverage/coverage.json',
-				report: 'bin/coverage',
+		coverage: {
+			src: ['src/main/js/*.js'],
+			options: {
+				specs: ['src/test/js/*.js'],
+				template: require('grunt-template-jasmine-istanbul'),
+				templateOptions: {
+					coverage: 'bin/coverage/coverage.json',
+					report: 'bin/coverage',
+				}
 			}
 		}
 	}

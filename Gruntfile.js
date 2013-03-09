@@ -28,7 +28,20 @@ module.exports = function(grunt) {
 					template: require('./src/main/js/template.js'),
 					templateOptions: {
 						coverage: '<%= meta.temp.integration %>/coverage.json',
-						report: '<%= meta.temp.integration %>',
+						report: [
+							{
+								type: 'html',
+								options: {
+									dir: '<%= meta.temp.integration %>/html'
+								}
+							},
+							{
+								type: 'cobertura',
+								options: {
+									dir: '<%= meta.temp.integration %>/cobertura'
+								}
+							}
+						],
 						template: '<%= meta.src.test %>/html/integration.tmpl',
 						templateOptions: {
 							helpers: ['<%= meta.src.test %>/js/integration-helper.js']

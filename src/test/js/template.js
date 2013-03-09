@@ -30,7 +30,10 @@ function getContext () {
 			reporters: ['e.js'],
 			start: ['f.js']
 		},
-		options: {}
+		options: {
+			report: 'g',
+			coverage: 'h'
+		}
 	};
 }
 
@@ -74,7 +77,7 @@ exports['template'] = {
 				'should transit template options');
 		test.done();
 	},
-	'report': {
+	'coverage': {
 		'setUp': function (callback) {
 			this.context.options.coverage = TEMP + '/coverage/coverage.json';
 			this.context.options.report = TEMP + '/coverage';
@@ -85,25 +88,75 @@ exports['template'] = {
 					scope.registered.callback = callback;
 				};
 			})(this);
-			this.template.process(grunt, this.task, this.context);
 			callback();
 		},
 		'shouldRegister': function (test) {
+			this.template.process(grunt, this.task, this.context);
 			test.equal(this.registered.event, 'jasmine.coverage',
 					'should register for jasmine.coverage');
 			test.done();
 		},
 		'shouldWriteCoverage': function (test) {
+			this.template.process(grunt, this.task, this.context);
 			this.registered.callback({});
 			test.ok(grunt.file.exists(TEMP + '/coverage/coverage.json'),
 					'should write coverage.json');
 			grunt.file.delete(TEMP);
 			test.done();
 		},
-		'shouldWriteReport': function (test) {
+		'shouldWriteDefaultHtmlReport': function (test) {
+			this.template.process(grunt, this.task, this.context);
 			this.registered.callback({});
 			test.ok(grunt.file.exists(TEMP + '/coverage/index.html'),
-					'should write report');
+					'should write default HTML report');
+			grunt.file.delete(TEMP);
+			test.done();
+		},
+		'shouldWriteSingleReport': function (test) {
+			this.context.options.report = {
+				type: 'cobertura',
+				options: {
+					dir: TEMP + '/coverage'
+				}
+			};
+			this.template.process(grunt, this.task, this.context);
+			this.registered.callback({});
+			test.ok(grunt.file.exists(
+					TEMP + '/coverage/cobertura-coverage.xml'),
+					'should write single report');
+			grunt.file.delete(TEMP);
+			test.done();
+		},
+		'shouldWriteMultipleReports': function (test) {
+			this.context.options.report = [
+				{
+					type: 'html',
+					options: {
+						dir: TEMP + '/coverage/html'
+					}
+				},
+				{
+					type: 'cobertura',
+					options: {
+						dir: TEMP + '/coverage/cobertura'
+					}
+				},
+				{
+					type: 'lcovonly',
+					options: {
+						dir: TEMP + '/coverage/lcov'
+					}
+				}
+			];
+			this.template.process(grunt, this.task, this.context);
+			this.registered.callback({});
+			test.ok(grunt.file.exists(TEMP + '/coverage/html/index.html'),
+					'should write HTML report');
+			test.ok(grunt.file.exists(
+					TEMP + '/coverage/cobertura/cobertura-coverage.xml'),
+					'should write Cobertura report');
+			test.ok(grunt.file.exists(TEMP + '/coverage/lcov/lcov.info'),
+					'should write LCOV report');
 			grunt.file.delete(TEMP);
 			test.done();
 		}
@@ -139,7 +192,7 @@ exports['template'] = {
 			test.done();
 		}
 	},
-	'noTemplate': {
+	'defaultTemplate': {
 		'setUp': function (callback) {
 			this.processed = this.template.process(grunt, this.task,
 					this.context);
