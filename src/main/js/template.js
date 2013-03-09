@@ -4,11 +4,12 @@
  * @author Manuel Leuenberger
  */
 
+var path = require('path');
+var istanbul = require('istanbul');
+
 var REPORTER = __dirname + '/reporter.js';
 var DEFAULT_TEMPLATE = 'node_modules/grunt-contrib-jasmine/tasks/jasmine/'
 		+ 'templates/DefaultRunner.tmpl';
-var path = require('path');
-var istanbul = require('istanbul');
 
 exports.process = function (grunt, task, context) {
 	var instrumenter = new istanbul.Instrumenter();

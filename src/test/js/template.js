@@ -4,15 +4,16 @@
  * @author Manuel Leuenberger
  */
 
+var grunt = require('grunt');
+var path = require('path');
+var istanbul = require('istanbul');
+
 var TEMP = '.grunt/temp';
 var SRC = 'src/test/js/Generator.js';
 var SPEC = 'src/test/js/GeneratorTest.js';
 var DEFAULT_TEMPLATE = 'node_modules/grunt-contrib-jasmine/tasks/jasmine/'
 		+ 'templates/DefaultRunner.tmpl';
 
-var grunt = require('grunt');
-var path = require('path');
-var istanbul = require('istanbul');
 var instrumenter = new istanbul.Instrumenter();
 var collector = new istanbul.Collector();
 
@@ -120,14 +121,15 @@ exports['template'] = {
 		'shouldIncludeReporter': function (test) {
 			test.equal(this.context.scripts.reporters.length, 2,
 					'should have added 1 reporter');
-			test.equal(this.context.scripts.reporters[0],
+			test.equal(path.normalize(this.context.scripts.reporters[0]),
 					path.join(__dirname, '../../main/js/reporter.js'),
 					'should be the coverage reporter');
 			test.done();
 		},
 		'shouldInstrumentSource': function (test) {
 			test.equal(this.context.scripts.src.length, 1, 'should have 1 src');
-			test.equal(this.context.scripts.src[0], TEMP + '/' + SRC,
+			test.equal(path.normalize(this.context.scripts.src[0]),
+					path.join(TEMP, SRC),
 					'should store instrumented in temp directory');
 			var instrumented = this.context.scripts.src[0];
 			var found = grunt.file.read(instrumented).split('\n')[0];
