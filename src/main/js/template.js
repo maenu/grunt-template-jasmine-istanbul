@@ -7,7 +7,7 @@
 var path = require('path');
 var istanbul = require('istanbul');
 
-var REPORTER = __dirname + '/reporter.js';
+var REPORTER = "node_modules/grunt-template-jasmine-istanbul/src/main/js/reporter.js";
 var DEFAULT_TEMPLATE = 'node_modules/grunt-contrib-jasmine/tasks/jasmine/'
 		+ 'templates/DefaultRunner.tmpl';
 
