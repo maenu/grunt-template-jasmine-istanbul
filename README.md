@@ -1,4 +1,4 @@
-Code coverage template mix-in for grunt-contrib-jasmine, using istanbul
+Code coverage template mix-in for [grunt-contrib-jasmine](https://github.com/gruntjs/grunt-contrib-jasmine), using [istanbul](https://github.com/gotwarlost/istanbul)
 -----------------------------------------
 
 ## Installation
@@ -47,10 +47,11 @@ Default: `undefined`
 
 The options to pass to the mixed-in template.
 
-## Sample usage
+## Sample Usage
 
-Have a look at
-[this example](https://github.com/maenu/grunt-template-jasmine-istanbul-example).
+### Basic
+
+Have a look at [this example](https://github.com/maenu/grunt-template-jasmine-istanbul-example).
 
 ```js
 // Example configuration
@@ -70,3 +71,50 @@ grunt.initConfig({
 	}
 }
 ```
+
+### RequireJS
+
+Have a look at [this example](https://github.com/maenu/grunt-template-jasmine-istanbul-example/tree/requirejs).
+Note that you need to configure the `baseUrl` to point to the instrumented sources, as described in the section [below](https://github.com/maenu/grunt-template-jasmine-istanbul#asinglerequirement).
+
+```js
+grunt.initConfig({
+    jasmine: {
+        coverage: {
+            src: ['src/main/js/*.js'],
+            options: {
+                specs: ['src/test/js/*.js'],
+                template: require('grunt-template-jasmine-istanbul'),
+                templateOptions: {
+                    coverage: 'bin/coverage/coverage.json',
+                    report: 'bin/coverage',
+                    template: require('grunt-template-jasmine-requirejs'),
+                    templateOptions: {
+                        requireConfig: {
+                            baseUrl: '.grunt/grunt-contrib-jasmine/src/main/js/'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+## Mixed-in Templates
+
+### The Idea
+
+Do you have another template you want to use, but you also want to collect code coverage at the same time?
+Then you can use a mixed-in template, that's what they are for.
+The idea behind a mixed-in template is simple:
+Istanbul generates code coverage information by instrumenting the sources before they are run and by generating reports after they have run.
+Therefore this templates acts as a test pre- and post-processor, but it doesn't interfere with the actual running of the tests.
+This makes it possible to use another template as a mix-in template to run the tests, defined by `templateOptions.template` and can be configured with `templateOptions.templateOptions`.
+
+### A Single Requirement
+
+A mixed-in template needs to load the instrumented sources in order for the coverage reports to be correctly generated.
+This template copies instrumented versions of the sources to a temporary location at `.grunt/grunt-contrib-jasmine/`.
+If your mixed-in template simply includes the sources, as the default template does, you don't need to account for that, since this template replaces the `src` option with the paths to the instrumented versions.
+If your mixed-in template loads the sources differently, e.g. directly from the file system, you may need to reconfigure the mixed-in template.
