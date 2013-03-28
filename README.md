@@ -75,7 +75,7 @@ grunt.initConfig({
 ### RequireJS
 
 Have a look at [this example](https://github.com/maenu/grunt-template-jasmine-istanbul-example/tree/requirejs).
-Note that you need to configure the `baseUrl` to point to the instrumented sources, as described in the section [below](https://github.com/maenu/grunt-template-jasmine-istanbul#asinglerequirement).
+Note that you need to configure the `baseUrl` to point to the instrumented sources, as described in the section [below](https://github.com/maenu/grunt-template-jasmine-istanbul#a-single-requirement).
 
 ```js
 grunt.initConfig({
