@@ -11,7 +11,9 @@ var istanbul = require('istanbul');
 var TEMP = '.grunt/temp';
 var SRC = 'src/test/js/Generator.js';
 var SPEC = 'src/test/js/GeneratorTest.js';
-var DEFAULT_TEMPLATE = 'node_modules/grunt-contrib-jasmine/tasks/jasmine/'
+var REPORTER = './node_modules/grunt-template-jasmine-istanbul/src/main/js/'
+		+ 'reporter.js';
+var DEFAULT_TEMPLATE = './node_modules/grunt-contrib-jasmine/tasks/jasmine/'
 		+ 'templates/DefaultRunner.tmpl';
 
 var instrumenter = new istanbul.Instrumenter();
@@ -175,7 +177,7 @@ exports['template'] = {
 			test.equal(this.context.scripts.reporters.length, 2,
 					'should have added 1 reporter');
 			test.equal(path.normalize(this.context.scripts.reporters[0]),
-					path.join(__dirname, '../../main/js/reporter.js'),
+					path.normalize(REPORTER),
 					'should be the coverage reporter');
 			test.done();
 		},

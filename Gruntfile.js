@@ -68,13 +68,27 @@ module.exports = function(grunt) {
 		reporter.writeReport(collector, true);
 	});
 	
+	var path = require('path');
+	
+	var NAME = grunt.file.readJSON('package.json').name;
+	var MODULE = path.join('node_modules', NAME);
+	var REPORTER_SOURCE = path.normalize('src/main/js/reporter.js');
+	var REPORTER_DESTINATION = path.join(MODULE, REPORTER_SOURCE);
+	
+	grunt.registerTask('dummyInstall', 'Pretend installation', function () {
+		grunt.file.copy(REPORTER_SOURCE, REPORTER_DESTINATION);
+	});
+	grunt.registerTask('dummyUninstall', 'Pretend uninstallation', function () {
+		grunt.file.delete(MODULE);
+	});
+	
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-jasmine');
 	grunt.loadNpmTasks('grunt-contrib-nodeunit');
 	
 	grunt.registerTask('test:template', ['nodeunit:template']);
 	grunt.registerTask('test:reporter', ['nodeunit:reporter']);
-	grunt.registerTask('test:integration', ['clean:temp', 'jasmine:integration', 'nodeunit:integration']);
+	grunt.registerTask('test:integration', ['clean:temp', 'dummyInstall', 'jasmine:integration', 'nodeunit:integration', 'dummyUninstall']);
 	grunt.registerTask('test', ['test:template', 'test:reporter', 'test:integration']);
 	grunt.registerTask('test:coverage', ['clean:bin', 'test', 'report']);
 };

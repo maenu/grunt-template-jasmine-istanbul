@@ -6,6 +6,7 @@
  */
 
 var grunt = require('grunt');
+var path = require('path');
 
 exports['integration'] = {
 	'shouldTransitTemplateOptions': function (test) {
