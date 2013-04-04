@@ -1,5 +1,4 @@
-Code coverage template mix-in for [grunt-contrib-jasmine](https://github.com/gruntjs/grunt-contrib-jasmine), using [istanbul](https://github.com/gotwarlost/istanbul)
------------------------------------------
+# Code coverage template mix-in for [grunt-contrib-jasmine](https://github.com/gruntjs/grunt-contrib-jasmine), using [istanbul](https://github.com/gotwarlost/istanbul)
 
 ## Installation
 
@@ -34,6 +33,15 @@ report: {
 ````
 
 If an `Array` is given, it must consist of `Object`s of the form just described.
+
+#### Supported Types
+
+ * [`html`](http://gotwarlost.github.com/istanbul/public/apidocs/classes/HtmlReport.html)
+ * [`text`](http://gotwarlost.github.com/istanbul/public/apidocs/classes/TextReport.html)
+ * [`text-summary`](http://gotwarlost.github.com/istanbul/public/apidocs/classes/TextSummaryReport.html)
+ * [`lcov`](http://gotwarlost.github.com/istanbul/public/apidocs/classes/LcovReport.html)
+ * [`lcovonly`](http://gotwarlost.github.com/istanbul/public/apidocs/classes/LcovOnlyReport.html)
+ * [`cobertura`](http://gotwarlost.github.com/istanbul/public/apidocs/classes/CoberturaReport.html)
 
 ### templateOptions.template
 Type: `String | Object`
@@ -75,7 +83,7 @@ grunt.initConfig({
 ### RequireJS
 
 Have a look at [this example](https://github.com/maenu/grunt-template-jasmine-istanbul-example/tree/requirejs).
-Note that you need to configure the `baseUrl` to point to the instrumented sources, as described in the section [below](https://github.com/maenu/grunt-template-jasmine-istanbul#a-single-requirement).
+Note that you need to configure the `baseUrl` to point to the instrumented sources, as described in the section [below](https://github.com/maenu/grunt-template-jasmine-istanbul#a-single-arequirement).
 
 ```js
 grunt.initConfig({
