@@ -34,7 +34,7 @@ report: {
 
 If an `Array` is given, it must consist of `Object`s of the form just described.
 
-#### Supported Types
+The supported types are:
 
  * [`html`](http://gotwarlost.github.com/istanbul/public/apidocs/classes/HtmlReport.html)
  * [`text`](http://gotwarlost.github.com/istanbul/public/apidocs/classes/TextReport.html)
