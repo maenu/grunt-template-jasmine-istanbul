@@ -54,8 +54,29 @@ module.exports = function(grunt) {
 						}
 					}
 				}
-			}
-		},
+			},
+            // test that threshold can fail the build
+            thresholdNotMet: {
+                src: ['<%= meta.src.test %>/js/Generator.js'],
+                options: {
+                    specs: ['<%= meta.src.test %>/js/GeneratorTest.js'],
+                    template: require('./src/main/js/template.js'),
+                    templateOptions: {
+                        coverage: '<%= meta.temp.integration %>/coverage.json',
+                        report: {
+                            type: 'text-summary'
+                        },
+                        thresholds: {
+                            lines: 101
+                        },
+                        template: '<%= meta.src.test %>/html/integration.tmpl',
+                        templateOptions: {
+                            helpers: ['<%= meta.src.test %>/js/integration-helper.js']
+                        }
+                    }
+                }
+            }
+        },
 		clean: {
 			temp: ['.grunt'],
 			bin: ['bin']
@@ -97,4 +118,22 @@ module.exports = function(grunt) {
 	grunt.registerTask('test:integration', ['clean:temp', 'dummyInstall', 'jasmine:integration', 'nodeunit:integration', 'dummyUninstall']);
 	grunt.registerTask('test', ['test:template', 'test:reporter', 'test:integration']);
 	grunt.registerTask('test:coverage', ['clean:bin', 'test', 'report']);
+
+    grunt.registerTask('warn:mock', function () {
+        grunt.warnOrig = grunt.warn;
+        grunt.warn = function(msg) {
+            grunt.actualMsg = msg;
+        };
+    });
+    grunt.registerTask('warn:restore', function () {
+        grunt.warn = grunt.warnOrig;
+        if(!grunt.actualMsg) {
+            grunt.warn('expected task to fail but it did not')
+        }
+        var expectedMsg = 'expected lines coverage to be at least 101% but was 100%';
+        if(grunt.actualMsg !== expectedMsg) {
+            grunt.warn('expected task to fail with message "' + expectedMsg + '" but was "' + grunt.actualMsg + '"');
+        }
+    });
+    grunt.registerTask('test:threshold', ['clean:temp', 'dummyInstall', 'warn:mock', 'jasmine:thresholdNotMet', 'warn:restore', 'dummyUninstall']);
 };
