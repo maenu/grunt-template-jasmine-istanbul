@@ -43,6 +43,15 @@ The supported types are:
  * [`lcovonly`](http://gotwarlost.github.com/istanbul/public/apidocs/classes/LcovOnlyReport.html)
  * [`cobertura`](http://gotwarlost.github.com/istanbul/public/apidocs/classes/CoberturaReport.html)
 
+
+### templateOptions.thresholds
+Type: `Object`
+Default: `undefined`
+
+Thresholds for any of the metrics that Istanbul measures. If a threshold is not met a warning is emitted.
+See example below for available metrics.
+
+
 ### templateOptions.template
 Type: `String | Object`
 Default: jasmine's default template
@@ -73,6 +82,12 @@ grunt.initConfig({
 				templateOptions: {
 					coverage: 'bin/coverage/coverage.json',
 					report: 'bin/coverage',
+                    thresholds: {
+                        lines: 75,
+                        statements: 75,
+                        branches: 75,
+                        functions: 90
+                    }
 				}
 			}
 		}

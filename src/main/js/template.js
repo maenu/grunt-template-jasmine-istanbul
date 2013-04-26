@@ -44,12 +44,30 @@ exports.process = function (grunt, task, context) {
 	// listen to coverage event dispatched by reporter and write reports
 	var collector = new istanbul.Collector();
 	var coverageJson = context.options.coverage;
+    var thresholds = context.options.thresholds;
 	task.phantomjs.on('jasmine.coverage', function (coverage) {
 		grunt.file.write(coverageJson, JSON.stringify(coverage));
 		collector.add(coverage);
 		for (var i = 0; i < reports.length; i++) {
 			reports[i].writeReport(collector, true);
 		}
+        // fail if coverage threshold not met
+        if(thresholds) {
+            var summaries = [];
+            collector.files().forEach(function (file) {
+                summaries.push(istanbul.utils.summarizeFileCoverage(collector.fileCoverageFor(file)));
+            });
+            var finalSummary = istanbul.utils.mergeSummaryObjects.apply(null, summaries);
+            grunt.util._.each(thresholds, function (threshold, metric) {
+                var actual = finalSummary[metric];
+                if(!actual) {
+                    grunt.warn('unrecognized metric: ' + metric);
+                }
+                if(actual.pct < threshold) {
+                    grunt.warn('expected ' + metric + ' coverage to be at least ' + threshold + '% but was ' + actual.pct + '%');
+                }
+            });
+        }
 	});
 	// use template option to mix in coverage
 	var template = context.options.template;
