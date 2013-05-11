@@ -63,9 +63,11 @@ Default: `undefined`
 
 The options to pass to the mixed-in template.
 
-## Sample Usage
+## Examples
 
-### Basic
+There are multiple examples at a [example repository](https://github.com/maenu/grunt-template-jasmine-istanbul-example).
+
+### Simple
 
 Have a look at [this example](https://github.com/maenu/grunt-template-jasmine-istanbul-example).
 
