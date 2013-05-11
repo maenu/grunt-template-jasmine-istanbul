@@ -78,5 +78,14 @@ exports['reporter'] = {
 		test.strictEqual(message.data, __coverage__,
 				'should send coverage data');
 		test.done();
+	},
+	'shouldNotSendMessageToPhantom': function (test) {
+		var oldCoverage = __coverage__;
+		__coverage__ = null;
+		var reporter = jasmine.reporters[0];
+		reporter.reportRunnerResults();
+		test.strictEqual(phantom.messages.length, 0, 'should not send message');
+		__coverage__ = oldCoverage;
+		test.done();
 	}
 };

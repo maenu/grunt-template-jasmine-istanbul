@@ -41,8 +41,6 @@ function getContext () {
 
 function getTask () {
 	return {
-		writeTempFile: function () {},
-		copyTempFile: function () {},
 		phantomjs: {
 			on: function () {}
 		}
@@ -191,6 +189,44 @@ exports['template'] = {
 			var expected = 'if (typeof __coverage__ === \'undefined\') '
 					+ '{ __coverage__ = {}; }';
 			test.equal(found, expected, 'should be instrumented');
+			test.done();
+		}
+	},
+	'replacing': {
+		'setUp': function (callback) {
+			this.context.scripts.src.push(SRC);
+			callback();
+		},
+		'tearDown': function (callback) {
+			grunt.file.delete(TEMP);
+			callback();
+		},
+		'shouldReplaceSourceByDefault': function (test) {
+			var before = this.context.scripts.src;
+			this.template.process(grunt, this.task, this.context);
+			var after = this.context.scripts.src;
+			test.notEqual(after, before, 'should replace sources');
+			test.equal(path.normalize(after[0]), path.join(TEMP, SRC),
+					'should be at temp');
+			test.done();
+		},
+		'shouldReplaceSource': function (test) {
+			this.context.options.replace = true;
+			var before = this.context.scripts.src;
+			this.template.process(grunt, this.task, this.context);
+			var after = this.context.scripts.src;
+			test.notEqual(after, before, 'should replace sources');
+			test.equal(path.normalize(after[0]), path.join(TEMP, SRC),
+					'should be at temp');
+			test.done();
+		},
+		'shouldNotReplaceSource': function (test) {
+			this.context.options.replace = false;
+			var before = this.context.scripts.src;
+			this.template.process(grunt, this.task, this.context);
+			var after = this.context.scripts.src;
+			test.equal(path.normalize(after[0]), path.normalize(SRC),
+					'should be at temp');
 			test.done();
 		}
 	},

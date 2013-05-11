@@ -11,7 +11,8 @@ module.exports = function(grunt) {
 			},
 			temp: {
 				integration: '.grunt/integration'
-			}
+			},
+			doc: 'doc'
 		},
 		// test template functionality
 		nodeunit: {
@@ -25,7 +26,7 @@ module.exports = function(grunt) {
 				src: ['<%= meta.src.test %>/js/Generator.js'],
 				options: {
 					specs: ['<%= meta.src.test %>/js/GeneratorTest.js'],
-					template: require('./src/main/js/template.js'),
+					template: require('./'),
 					templateOptions: {
 						coverage: '<%= meta.temp.integration %>/coverage.json',
 						report: [
@@ -53,6 +54,51 @@ module.exports = function(grunt) {
 		clean: {
 			temp: ['.grunt'],
 			bin: ['bin']
+		},
+		yuidoc: {
+			compile: {
+				name: '<%= meta.package.name %>',
+				description: '<%= meta.package.description %>',
+				version: '<%= meta.package.version %>',
+				options: {
+					paths: '<%= meta.src.main %>',
+					outdir: '<%= meta.doc %>'
+				}
+			}
+		},
+		jshint: {
+			main: '<%= meta.src.main %>/js/*.js',
+			test: '<%= meta.src.test %>/js/*.js',
+			options: {
+				// enforce
+				bitwise: true,
+				camelcase: true,
+				curly: true,
+				eqeqeq: false,
+				forin: true,
+				immed: true,
+				indent: 4,
+				latedef: true,
+				newcap: true,
+				noarg: true,
+				noempty: true,
+				nonew: true,
+				plusplus: true,
+				quotmark: 'single',
+				undef: true,
+				unused: true,
+				strict: false, // i don't get it
+				trailing: true,
+				maxparams: 5,
+				maxdepth: 3,
+				maxstatements: 42,
+				maxcomplexity: 5,
+				maxlen: 80,
+				// relax
+				eqnull: true,
+				laxbreak: true, // break on + etc.
+				sub: true
+			}
 		}
 	});
 	
@@ -85,7 +131,11 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-jasmine');
 	grunt.loadNpmTasks('grunt-contrib-nodeunit');
+	grunt.loadNpmTasks('grunt-contrib-yuidoc');
+	grunt.loadNpmTasks('grunt-contrib-jshint');
 	
+	grunt.registerTask('check', ['jshint:main', 'jshint:test']);		
+	grunt.registerTask('doc', 'yuidoc');
 	grunt.registerTask('test:template', ['nodeunit:template']);
 	grunt.registerTask('test:reporter', ['nodeunit:reporter']);
 	grunt.registerTask('test:integration', ['clean:temp', 'dummyInstall', 'jasmine:integration', 'nodeunit:integration', 'dummyUninstall']);
