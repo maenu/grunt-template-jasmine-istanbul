@@ -107,7 +107,7 @@ grunt.initConfig({
                     template: require('grunt-template-jasmine-requirejs'),
                     templateOptions: {
                         requireConfig: {
-                            baseUrl: './.grunt/grunt-contrib-jasmine/src/main/js/'
+                            baseUrl: '.grunt/grunt-contrib-jasmine/src/main/js/'
                         }
                     }
                 }
