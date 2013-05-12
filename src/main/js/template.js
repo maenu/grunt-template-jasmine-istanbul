@@ -7,6 +7,7 @@
  */
 var path = require('path');
 var istanbul = require('istanbul');
+var grunt = require('grunt');
 
 var REPORTER = './node_modules/grunt-template-jasmine-istanbul/src/main/js/'
 		+ 'reporter.js';
@@ -14,33 +15,112 @@ var DEFAULT_TEMPLATE = './node_modules/grunt-contrib-jasmine/tasks/jasmine/'
 		+ 'templates/DefaultRunner.tmpl';
 
 /**
- * Gets the istanbul reports created from the specified options.
+ * Instruments the specified sources and moves the instrumented sources to the
+ * temporary location, recreating the original directory structure.
  *
  * @private
- * @method getReports
+ * @method instrument
  *
- * @param {Object} options The options describing the reports
+ * @param {Array} sources The paths of the original sources
+ * @param {String} tmp The path to the temporary directory
  *
- * @return {Array} The istanbul reports created from the options
+ * @return {Array} The paths to the instrumented sources
  */
-var getReports = function (options) {
-	var reports = [];
+var instrument = function (sources, tmp) {
+	var instrumenter = new istanbul.Instrumenter();
+	var instrumentedSources = [];
+	sources.forEach(function (source) {
+		var tmpSource = path.join(tmp, source);
+		grunt.file.write(tmpSource, instrumenter.instrumentSync(
+				grunt.file.read(source), source));
+		instrumentedSources.push(tmpSource);
+	});
+	return instrumentedSources;
+};
+
+/**
+ * Writes the coverage file.
+ *
+ * @private
+ * @method writeCoverage
+ *
+ * @param {Object} coverage The coverage data
+ * @param {String} file The path to the coverage file
+ */
+var writeCoverage = function (coverage, file) {
+	grunt.file.write(file, JSON.stringify(coverage));
+};
+
+/**
+ * Writes the report of the specified type, using the specified options and
+ * reporting the coverage collected by the specified collector.
+ *
+ * @private
+ * @method writeReport
+ *
+ * @param {String} type The report type
+ * @param {Object} options The report options
+ * @param {Collector} collector The collector containing the coverage
+ */
+var writeReport = function (type, options, collector) {
+	istanbul.Report.create(type, options).writeReport(collector, true);
+};
+
+/**
+ * Writes the istanbul reports created from the specified options.
+ *
+ * @private
+ * @method writeReports
+ *
+ * @param {Collector} collector The collector containing the coverage
+ * @param {Object} options The options describing the reports
+ */
+var writeReports = function (collector, options) {
 	if (typeof options == 'string' || options instanceof String) {
 		// default to html report at options directory
-		reports.push(istanbul.Report.create('html', {
+		writeReport('html', {
 			dir: options
-		}));
+		}, collector);
 	} else if (options instanceof Array) {
 		// multiple reports
 		for (var i = 0; i < options.length; i = i + 1) {
 			var report = options[i];
-			reports.push(istanbul.Report.create(report.type, report.options));
+			writeReport(report.type, report.options, collector);
 		}
 	} else {
 		// single report
-		reports.push(istanbul.Report.create(options.type, options.options));
+		writeReport(options.type, options.options, collector);
 	}
-	return reports;
+};
+
+/**
+ * Processes the mixed-in template. Defaults to jasmine's default template and
+ * sets up the context using the mixed-in template's options.
+ *
+ * @private
+ * @method processMixedInTemplate
+ *
+ * @param {Object} grunt The grunt object
+ * @param {Object} task Provides utility methods to register listeners and
+ *     handle temporary files
+ * @param {Object} context Contains all options
+ *
+ * @return {String} The template HTML source of the mixed in template
+ */
+var processMixedInTemplate = function (grunt, task, context) {
+	var template = context.options.template;
+	if (!template) {
+		template = DEFAULT_TEMPLATE;
+	}
+	// clone context
+	var mixedInContext = JSON.parse(JSON.stringify(context));
+	// transit templateOptions
+	mixedInContext.options = context.options.templateOptions || {};
+	if (template.process) {
+		return template.process(grunt, task, mixedInContext);
+	} else {
+		return grunt.util._.template(grunt.file.read(template), mixedInContext);
+	}
 };
 
 /**
@@ -56,42 +136,21 @@ var getReports = function (options) {
  * @return {String} The template HTML source
  */
 exports.process = function (grunt, task, context) {
-	// prepare reports
-	var reports = getReports(context.options.report);
 	// prepend coverage reporter
 	context.scripts.reporters.unshift(REPORTER);
 	// instrument sources
-	var instrumenter = new istanbul.Instrumenter();
-	var instrumentedSrc = [];
-	context.scripts.src.forEach(function (src) {
-		var tmpSrc = path.join(context.temp, src);
-		grunt.file.write(tmpSrc, instrumenter.instrumentSync(
-				grunt.file.read(src), src));
-		instrumentedSrc.push(tmpSrc);
-	});
+	var instrumentedSources = instrument(context.scripts.src, context.temp);
 	// replace sources
 	if (context.options.replace == null || context.options.replace) {
-		context.scripts.src = instrumentedSrc;
+		context.scripts.src = instrumentedSources;
 	}
-	// listen to coverage event dispatched by reporter and write reports
-	var collector = new istanbul.Collector();
-	var coverageJson = context.options.coverage;
+	// listen to coverage event dispatched by reporter
 	task.phantomjs.on('jasmine.coverage', function (coverage) {
-		grunt.file.write(coverageJson, JSON.stringify(coverage));
+		var collector = new istanbul.Collector();
 		collector.add(coverage);
-		for (var i = 0; i < reports.length; i = i + 1) {
-			reports[i].writeReport(collector, true);
-		}
+		writeCoverage(coverage, context.options.coverage);
+		writeReports(collector, context.options.report);
 	});
-	// use template options to mix in coverage
-	var template = context.options.template;
-	context.options = context.options.templateOptions || {};
-	if (!template) {
-		template = DEFAULT_TEMPLATE;
-	}
-	if (template.process) {
-		return template.process(grunt, task, context);
-	} else {
-		return grunt.util._.template(grunt.file.read(template), context);
-	}
+	// process mixed-in template
+	return processMixedInTemplate(grunt, task, context);
 };

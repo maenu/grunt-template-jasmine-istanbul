@@ -41,6 +41,9 @@ module.exports = function(grunt) {
 								options: {
 									dir: '<%= meta.temp.integration %>/cobertura'
 								}
+							},
+							{
+								type: 'text-summary'
 							}
 						],
 						template: '<%= meta.src.test %>/html/integration.tmpl',

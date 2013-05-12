@@ -69,12 +69,16 @@ exports['template'] = {
 		callback();
 	},
 	'shouldTransitTemplateOptions': function (test) {
+		this.context.options.template = {
+			process: function (grunt, task, context) {
+				return context.options.transited;
+			}
+		}
 		this.context.options.templateOptions = {
 			transited: true
 		};
-		this.template.process(grunt, this.task, this.context);
-		test.equal(this.context.options.transited, true,
-				'should transit template options');
+		var transited = this.template.process(grunt, this.task, this.context);
+		test.equal(transited, true, 'should transit template options');
 		test.done();
 	},
 	'coverage': {
@@ -275,8 +279,12 @@ exports['template'] = {
 					'should be called with grunt');
 			test.strictEqual(this.processed[1], this.task,
 					'should be called with task');
-			test.strictEqual(this.processed[2], this.context,
-					'should be called with context');
+			test.notStrictEqual(this.processed[2], this.context,
+					'should not be called with same context');
+			this.context.options = {};
+			test.equal(JSON.stringify(this.processed[2]),
+					JSON.stringify(this.context),
+					'should be called with cloned context');
 			test.done();
 		}
 	}
