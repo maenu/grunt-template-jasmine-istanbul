@@ -1,7 +1,5 @@
 /**
  * Nodeunit tests for the basic template functionality.
- *
- * @author Manuel Leuenberger
  */
 
 var grunt = require('grunt');
@@ -231,6 +229,89 @@ exports['template'] = {
 			var after = this.context.scripts.src;
 			test.equal(path.normalize(after[0]), path.normalize(SRC),
 					'should be at temp');
+			test.done();
+		}
+	},
+	'thresholds': {
+		'setUp': function (callback) {
+			this.context.options.coverage = TEMP + '/coverage/coverage.json';
+			this.context.options.report = TEMP + '/coverage';
+			this.warn = grunt.warn;
+			grunt.warn = function (message) {
+				throw new Error(message);
+			};
+			this.coverage = {
+				'integration-helper': {
+					path: './src/test/js/integration-helper.js',
+					s: {},
+					b: {},
+					f: {},
+					branchMap: {},
+					fnMap: {}
+				}
+			};
+			this.coverageListener = null;
+			this.task.phantomjs.on = (function (scope) {
+				return function (event, callback) {
+					scope.coverageListener = callback;
+				};
+			})(this);
+			callback();
+		},
+		'tearDown': function (callback) {
+			grunt.warn = this.warn;
+			grunt.file.delete(TEMP);
+			callback();
+		},
+		'shouldNotWarnWithoutOption': function (test) {
+			this.context.options.thresholds = undefined;
+			this.template.process(grunt, this.task, this.context);
+			try {
+				this.coverageListener(this.coverage);
+			} catch (error) {
+				test.ok(false, 'should not warn');
+			}
+			test.done();
+		},
+		'shouldNotWarnWhenThresholdsMet': function (test) {
+			this.context.options.thresholds = {
+				lines: 100
+			};
+			this.template.process(grunt, this.task, this.context);
+			try {
+				this.coverageListener(this.coverage);
+			} catch (error) {
+				test.ok(false, 'should not warn');
+			}
+			test.done();
+		},
+		'shouldWarnWhenThresholdsNotMet': function (test) {
+			this.context.options.thresholds = {
+				lines: 101
+			};
+			this.template.process(grunt, this.task, this.context);
+			try {
+				this.coverageListener(this.coverage);
+				test.ok(false, 'should warn');
+			} catch (error) {
+				test.equal(error.message,
+					'expected lines coverage to be at least 101% but was 100%',
+					'should warn correctly');
+			}
+			test.done();
+		},
+		'shouldWarnWhenNoMetric': function (test) {
+			this.context.options.thresholds = {
+				whatever: 101
+			};
+			this.template.process(grunt, this.task, this.context);
+			try {
+				this.coverageListener(this.coverage);
+				test.ok(false, 'should warn');
+			} catch (error) {
+				test.equal(error.message, 'unrecognized metric: whatever',
+					'should warn correctly');
+			}
 			test.done();
 		}
 	},

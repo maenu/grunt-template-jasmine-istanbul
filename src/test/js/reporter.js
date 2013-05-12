@@ -1,7 +1,5 @@
 /**
  * Nodeunit tests for the basic template functionality.
- *
- * @author Manuel Leuenberger
  */
 
 var grunt = require('grunt');

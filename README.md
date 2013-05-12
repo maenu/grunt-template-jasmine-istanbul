@@ -51,6 +51,14 @@ Default: `true`
 Whether or not the `src` scripts are replaced by the paths to their instrumented versions.
 This is useful when you want the mixed-in template to work with the original sources, and you want to serve the instrumented sources by redirecting request on the server side.
 
+### templateOptions.thresholds
+Type: `Object`
+Default: `undefined`
+
+Thresholds for any of the metrics that Istanbul measures.
+If a threshold is not met, a warning is emitted.
+See example below for available metrics.
+
 ### templateOptions.template
 Type: `String | Object`
 Default: jasmine's default template
@@ -83,6 +91,12 @@ grunt.initConfig({
 				templateOptions: {
 					coverage: 'bin/coverage/coverage.json',
 					report: 'bin/coverage',
+                    thresholds: {
+                        lines: 75,
+                        statements: 75,
+                        branches: 75,
+                        functions: 90
+                    }
 				}
 			}
 		}
@@ -148,4 +162,5 @@ If your mixed-in template loads the sources differently, e.g. directly from the 
 
 ## Change log
 
+ * v0.2.3, 12.05.13, merged `thresholds` from @larsthorup #9 which can abort a build with too low coverage
  * v0.2.2, 11.05.13, added `replace` option, so it can be prevented that the original `src` option is replaced with their instrumented versions

@@ -1,8 +1,6 @@
 /**
  * Tests if the files have been created correctly after running the jasmine
  * integration test.
- *
- * @author Manuel Leuenberger
  */
 
 var grunt = require('grunt');
