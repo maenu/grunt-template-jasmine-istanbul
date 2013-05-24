@@ -30,7 +30,7 @@ var instrument = function (sources, tmp) {
 	var instrumenter = new istanbul.Instrumenter();
 	var instrumentedSources = [];
 	sources.forEach(function (source) {
-		var filteredSourcePath = (process.platform === 'win32')? source.replace(/^([a-z]):\//i, '$1/') : source, // do this for Windows
+		var filteredSourcePath = (process.platform === 'win32')? source.replace(/^([a-z]):\//i, '$1/') : source, // OS platform check so that we don't try to write "C:" as part of a folder name on Windows
 			tmpSource = path.join(tmp, filteredSourcePath);
 
 		grunt.file.write(
