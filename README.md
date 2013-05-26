@@ -161,6 +161,6 @@ If your mixed-in template simply includes the sources, as the default template d
 If your mixed-in template loads the sources differently, e.g. directly from the file system, you may need to reconfigure the mixed-in template.
 
 ## Change log
-
+ * v0.2.4, 26.05.13, merged #12 from @kayhadrin, instrumented versions of files loaded via absolute paths on windows are now created at a valid path
  * v0.2.3, 12.05.13, merged `thresholds` from @larsthorup #9 which can abort a build with too low coverage
  * v0.2.2, 11.05.13, added `replace` option, so it can be prevented that the original `src` option is replaced with their instrumented versions
