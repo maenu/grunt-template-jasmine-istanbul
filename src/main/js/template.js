@@ -9,10 +9,10 @@ var path = require('path');
 var istanbul = require('istanbul');
 var grunt = require('grunt');
 
-var REPORTER = './node_modules/grunt-template-jasmine-istanbul/src/main/js/'
-		+ 'reporter.js';
-var DEFAULT_TEMPLATE = './node_modules/grunt-contrib-jasmine/tasks/jasmine/'
-		+ 'templates/DefaultRunner.tmpl';
+var REPORTER = __dirname + '/reporter.js';
+var TMP_REPORTER = 'grunt-template-jasmine-istanbul/reporter.js';
+var DEFAULT_TEMPLATE = __dirname + '/../../../../grunt-contrib-jasmine/tasks/'
+		+ 'jasmine/templates/DefaultRunner.tmpl';
 
 /**
  * Instruments the specified sources and moves the instrumented sources to the
@@ -169,7 +169,9 @@ var processMixedInTemplate = function (grunt, task, context) {
  */
 exports.process = function (grunt, task, context) {
 	// prepend coverage reporter
-	context.scripts.reporters.unshift(REPORTER);
+	var tmpReporter = path.join(context.temp, TMP_REPORTER);
+	grunt.file.copy(REPORTER, tmpReporter);
+	context.scripts.reporters.unshift(tmpReporter);
 	// instrument sources
 	var instrumentedSources = instrument(context.scripts.src, context.temp);
 	// replace sources

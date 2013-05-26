@@ -9,8 +9,7 @@ var istanbul = require('istanbul');
 var TEMP = '.grunt/temp';
 var SRC = 'src/test/js/Generator.js';
 var SPEC = 'src/test/js/GeneratorTest.js';
-var REPORTER = './node_modules/grunt-template-jasmine-istanbul/src/main/js/'
-		+ 'reporter.js';
+var REPORTER = '../../main/js/reporter.js';
 var DEFAULT_TEMPLATE = './node_modules/grunt-contrib-jasmine/tasks/jasmine/'
 		+ 'templates/DefaultRunner.tmpl';
 
@@ -32,7 +31,9 @@ function getContext () {
 		},
 		options: {
 			report: 'g',
-			coverage: 'h'
+			coverage: 'h',
+			// set template since jasmine is not installed as a peer-dependency
+			template: DEFAULT_TEMPLATE
 		}
 	};
 }
@@ -210,8 +211,9 @@ exports['template'] = {
 			test.equal(this.context.scripts.reporters.length, 2,
 					'should have added 1 reporter');
 			test.equal(path.normalize(this.context.scripts.reporters[0]),
-					path.normalize(REPORTER),
-					'should be the coverage reporter');
+					path.join(TEMP,
+							'grunt-template-jasmine-istanbul/reporter.js'),
+					'should be the temporary coverage reporter');
 			test.done();
 		},
 		'shouldInstrumentSource': function (test) {
@@ -350,15 +352,33 @@ exports['template'] = {
 	},
 	'defaultTemplate': {
 		'setUp': function (callback) {
-			this.processed = this.template.process(grunt, this.task,
-					this.context);
+			delete this.context.options.template;
 			callback();
 		},
-		'shouldRender': function (test) {
+		'shouldReadPeerDependency': function (test) {
+			var redirected = false;
+			// backup mocks
+			var read = grunt.file.read;
+			// install mocks
+			grunt.file.read = function (file) {
+				if (path.resolve(file) == path.resolve(
+						'../grunt-contrib-jasmine/tasks/jasmine/templates/'
+						+ 'DefaultRunner.tmpl')) {
+					redirected = true;
+					return read.apply(this, [DEFAULT_TEMPLATE]);
+				}
+				return read.apply(this, arguments);
+			};
+			// process
+			this.processed = this.template.process(grunt, this.task,
+					this.context);
 			this.expected = grunt.util._.template(
 					grunt.file.read(DEFAULT_TEMPLATE), this.context);
 			test.equal(this.processed, this.expected,
 					'should render default template');
+			test.ok(redirected, 'should have redirected the template');
+			// uninstall mocks
+			grunt.file.read = read;
 			test.done();
 		}
 	},

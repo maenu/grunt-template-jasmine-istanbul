@@ -150,20 +150,6 @@ module.exports = function(grunt) {
 		});
 		reporter.writeReport(collector, true);
 	});
-
-	var path = require('path');
-
-	var NAME = grunt.file.readJSON('package.json').name;
-	var MODULE = path.join('node_modules', NAME);
-	var REPORTER_SOURCE = path.normalize('src/main/js/reporter.js');
-	var REPORTER_DESTINATION = path.join(MODULE, REPORTER_SOURCE);
-
-	grunt.registerTask('mock:template:install', 'Pretend installation', function () {
-		grunt.file.copy(REPORTER_SOURCE, REPORTER_DESTINATION);
-	});
-	grunt.registerTask('mock:template:uninstall', 'Pretend uninstallation', function () {
-		grunt.file.delete(MODULE);
-	});
 	
 	var WARN = grunt.warn;
 	
@@ -180,8 +166,8 @@ module.exports = function(grunt) {
 	grunt.registerTask('doc', 'yuidoc');
 	grunt.registerTask('test:template', ['nodeunit:template']);
 	grunt.registerTask('test:reporter', ['nodeunit:reporter']);
-	grunt.registerTask('test:integration', ['clean:temp', 'mock:template:install', 'jasmine:integration', 'nodeunit:integration', 'mock:template:uninstall']);
-	grunt.registerTask('test:threshold', ['clean:temp', 'mock:template:install', 'mock:warn:install', 'jasmine:threshold', 'nodeunit:threshold', 'mock:warn:uninstall', 'mock:template:uninstall']);
+	grunt.registerTask('test:integration', ['clean:temp', 'jasmine:integration', 'nodeunit:integration']);
+	grunt.registerTask('test:threshold', ['clean:temp', 'mock:warn:install', 'jasmine:threshold', 'nodeunit:threshold', 'mock:warn:uninstall']);
 	grunt.registerTask('test', ['test:template', 'test:reporter', 'test:integration', 'test:threshold']);
 	grunt.registerTask('test:coverage', ['clean:bin', 'test', 'report']);
 
