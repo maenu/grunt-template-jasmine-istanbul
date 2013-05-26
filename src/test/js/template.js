@@ -79,6 +79,39 @@ exports['template'] = {
 		test.equal(transited, true, 'should transit template options');
 		test.done();
 	},
+	'shouldSanitizeWindowsPath': function (test) {
+		var windowsFile = 'C:\\some\\file.js';
+		var windowsFileSanitized = 'C\\some\\file.js';
+		var sanitized = false;
+		this.context.scripts.src.push(windowsFile);
+		// backup mocks
+		var platform = process.platform;
+		var read = grunt.file.read;
+		var write = grunt.file.write;
+		// install mocks
+		process.platform = 'win32';
+		grunt.file.read = function (file) {
+			if (path.normalize(file) == path.normalize(windowsFile)) {
+				return '';
+			}
+			return read.apply(this, arguments);
+		};
+		grunt.file.write = function (file) {
+			if (path.normalize(file) == path.join(TEMP, windowsFileSanitized)) {
+				sanitized = true;
+				return;
+			}
+			return write.apply(this, arguments);
+		};
+		// process
+		this.template.process(grunt, this.task, this.context);
+		test.ok(sanitized, 'should have been sanitized');
+		// uninstall mocks
+		process.platform = platform;
+		grunt.file.read = read;
+		grunt.file.write = write;
+		test.done();
+	},
 	'coverage': {
 		'setUp': function (callback) {
 			this.context.options.coverage = TEMP + '/coverage/coverage.json';
