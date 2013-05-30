@@ -171,7 +171,7 @@ exports.process = function (grunt, task, context) {
 	// prepend coverage reporter
 	var tmpReporter = path.join(context.temp, TMP_REPORTER);
 	grunt.file.copy(REPORTER, tmpReporter);
-	context.scripts.reporters.unshift(tmpReporter);
+	context.scripts.reporters.unshift(tmpReporter.replace(/\\/g, '/'));
 	// instrument sources
 	var instrumentedSources = instrument(context.scripts.src, context.temp);
 	// replace sources
