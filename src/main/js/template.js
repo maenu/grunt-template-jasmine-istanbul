@@ -38,7 +38,7 @@ var instrument = function (sources, tmp) {
 		var tmpSource = path.join(tmp, sanitizedSource);
 		grunt.file.write(tmpSource, instrumenter.instrumentSync(
 				grunt.file.read(source), source));
-		instrumentedSources.push(tmpSource);
+		instrumentedSources.push(tmpSource.replace(/\\/g, '/'));
 	});
 	return instrumentedSources;
 };
