@@ -174,6 +174,13 @@ exports.process = function (grunt, task, context) {
 	context.scripts.reporters.unshift(tmpReporter);
 	// instrument sources
 	var instrumentedSources = instrument(context.scripts.src, context.temp);
+
+	// clean up paths to src files when baseDir is set
+	if(context.options.baseDir){
+		context.scripts.src = grunt.util._.map(context.scripts.src, function(path){
+			return path.replace(new RegExp('^' + context.options.baseDir), '');
+		});
+	}
 	// replace sources
 	if (context.options.replace == null || context.options.replace) {
 		context.scripts.src = instrumentedSources;
