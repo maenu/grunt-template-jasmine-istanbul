@@ -30,5 +30,11 @@
     "grunt-contrib-clean": ">=0.4.0",
     "grunt-contrib-yuidoc": ">=0.4.0",
     "grunt-contrib-jshint": ">=0.4.3"
-  }
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.github.com/maenu/grunt-template-jasmine-istanbul/master/LICENSE.txt"
+    }
+  ]
 }
