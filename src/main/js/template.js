@@ -21,27 +21,36 @@ var DEFAULT_TEMPLATE = __dirname + '/../../../../grunt-contrib-jasmine/tasks/'
  * @private
  * @method instrument
  *
- * @param {Array} sources The paths of the original sources
+ * @param {Array} sources The paths of the original sources that need to be copied
+ * @param {Array} filesToInstrument The paths of the original sources that should be instrumented for code coverage
  * @param {String} tmp The path to the temporary directory
  *
- * @return {Array} The paths to the instrumented sources
+ * @return {Array} The paths to the copied sources
  */
-var instrument = function (sources, tmp) {
+var instrument = function (sources, filesToInstrument, tmp) {
 	var instrumenter = new istanbul.Instrumenter();
-	var instrumentedSources = [];
+	var newSourceFiles = [];
 	sources.forEach(function (source) {
-		var sanitizedSource = source;
+		var sanitizedSource = source,
+		    shouldInstrument = grunt.util._.include(filesToInstrument, source);
+
 		// don't try to write "C:" as part of a folder name on Windows
 		if (process.platform == 'win32') {
 			sanitizedSource = source.replace(/^([a-z]):/i, '$1');
 		}
 		var tmpSource = path.join(tmp, sanitizedSource);
-		grunt.file.write(tmpSource, instrumenter.instrumentSync(
-				grunt.file.read(source), source));
-		instrumentedSources.push(tmpSource);
+
+		var fileContents = grunt.file.read(source);
+		if (shouldInstrument) {
+			fileContents = instrumenter.instrumentSync(fileContents, source);
+			newSourceFiles.push(tmpSource.replace(/\\/g, '/'));
+		}
+
+		grunt.file.write(tmpSource, fileContents);
 	});
-	return instrumentedSources;
+	return newSourceFiles;
 };
+
 
 /**
  * Writes the coverage file.
@@ -171,9 +180,25 @@ exports.process = function (grunt, task, context) {
 	// prepend coverage reporter
 	var tmpReporter = path.join(context.temp, TMP_REPORTER);
 	grunt.file.copy(REPORTER, tmpReporter);
-	context.scripts.reporters.unshift(tmpReporter);
+	context.scripts.reporters.unshift(tmpReporter.replace(/\\/g, '/'));
+
+	// expand filesToInstrument option or assume we're instrumenting all sources
+	var filesToInstrument;
+	if(context.options.instrumentFiles){
+		filesToInstrument = grunt.file.expand(context.options.instrumentFiles);
+	} else {
+		filesToInstrument = context.scripts.src;
+	}
+
 	// instrument sources
-	var instrumentedSources = instrument(context.scripts.src, context.temp);
+	instrumentedSources = instrument(context.scripts.src, filesToInstrument, context.temp);
+
+	// clean up paths to src files when baseDir is set
+	if(context.options.baseDir){
+		context.scripts.src = grunt.util._.map(context.scripts.src, function(path){
+			return path.replace(new RegExp('^' + context.options.baseDir), '');
+		});
+	}
 	// replace sources
 	if (context.options.replace == null || context.options.replace) {
 		context.scripts.src = instrumentedSources;
