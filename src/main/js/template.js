@@ -170,6 +170,10 @@ var processMixedInTemplate = function (grunt, task, context) {
 exports.process = function (grunt, task, context) {
 	// prepend coverage reporter
 	var tmpReporter = path.join(context.temp, TMP_REPORTER);
+	// prevent backslashes issues on Windows
+	if ( process.platform == 'win32' ) {
+		tmpReporter = context.temp + '/' + TMP_REPORTER;
+	}
 	grunt.file.copy(REPORTER, tmpReporter);
 	context.scripts.reporters.unshift(tmpReporter);
 	// instrument sources
