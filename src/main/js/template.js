@@ -35,10 +35,11 @@ var instrument = function (sources, tmp) {
 		if (process.platform == 'win32') {
 			sanitizedSource = source.replace(/^([a-z]):/i, '$1');
 		}
-		var tmpSource = path.join(tmp, sanitizedSource);
+		var tmpSource = path.join(tmp, sanitizedSource).replace(/\\{1,2}/g,
+				'/');
 		grunt.file.write(tmpSource, instrumenter.instrumentSync(
 				grunt.file.read(source), source));
-		instrumentedSources.push(tmpSource.replace(/\\/g, '/'));
+		instrumentedSources.push(tmpSource);
 	});
 	return instrumentedSources;
 };
@@ -169,9 +170,10 @@ var processMixedInTemplate = function (grunt, task, context) {
  */
 exports.process = function (grunt, task, context) {
 	// prepend coverage reporter
-	var tmpReporter = path.join(context.temp, TMP_REPORTER);
+	var tmpReporter = path.join(context.temp, TMP_REPORTER).replace(/\\{1,2}/g,
+			'/');
 	grunt.file.copy(REPORTER, tmpReporter);
-	context.scripts.reporters.unshift(tmpReporter.replace(/\\/g, '/'));
+	context.scripts.reporters.unshift(tmpReporter);
 	// instrument sources
 	var instrumentedSources = instrument(context.scripts.src, context.temp);
 	// replace sources

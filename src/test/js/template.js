@@ -82,8 +82,9 @@ exports['template'] = {
 	},
 	'shouldSanitizeWindowsPath': function (test) {
 		var windowsFile = 'C:\\some\\file.js';
-		var windowsFileSanitized = 'C\\some\\file.js';
-		var sanitized = false;
+		var windowsFileSanitized = 'C/some/file.js';
+		var sanitizedSource = false;
+		var sanitizedReporter = false;
 		this.context.scripts.src.push(windowsFile);
 		// backup mocks
 		var platform = process.platform;
@@ -98,15 +99,20 @@ exports['template'] = {
 			return read.apply(this, arguments);
 		};
 		grunt.file.write = function (file) {
-			if (path.normalize(file) == path.join(TEMP, windowsFileSanitized)) {
-				sanitized = true;
+			if (file == TEMP + '/' + windowsFileSanitized) {
+				sanitizedSource = true;
+				return;
+			} else if (file == TEMP
+					+ '/grunt-template-jasmine-istanbul/reporter.js') {
+				sanitizedReporter = true;
 				return;
 			}
 			return write.apply(this, arguments);
 		};
 		// process
 		this.template.process(grunt, this.task, this.context);
-		test.ok(sanitized, 'should have been sanitized');
+		test.ok(sanitizedSource, 'should have sanitized source');
+		test.ok(sanitizedReporter, 'should have sanitized reporter');
 		// uninstall mocks
 		process.platform = platform;
 		grunt.file.read = read;
