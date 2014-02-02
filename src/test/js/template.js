@@ -21,13 +21,14 @@ function getContext () {
 		temp: TEMP,
 		css: ['a.css'],
 		scripts: {
+			polyfills: [],
 			jasmine: ['b.js'],
 			helpers: ['c.js'],
 			specs: [],
 			src: [],
 			vendor: ['d.js'],
 			reporters: ['e.js'],
-			start: ['f.js']
+			boot: ['f.js']
 		},
 		options: {
 			report: 'g',
@@ -80,12 +81,11 @@ exports['template'] = {
 		test.equal(transited, true, 'should transit template options');
 		test.done();
 	},
-	'shouldSanitizeWindowsPath': function (test) {
-		var windowsFile = 'C:\\some\\file.js';
-		var windowsFileSanitized = 'C/some/file.js';
-		var sanitizedSource = false;
-		var sanitizedReporter = false;
-		this.context.scripts.src.push(windowsFile);
+	'shouldGenerateUris': function (test) {
+		var source = 'C:\\some\\file.js';
+		var sourceUri = TEMP + '/C/some/file.js';
+		var reporterUri = TEMP + '/grunt-template-jasmine-istanbul/reporter.js';
+		this.context.scripts.src.push(source);
 		// backup mocks
 		var platform = process.platform;
 		var read = grunt.file.read;
@@ -93,28 +93,49 @@ exports['template'] = {
 		// install mocks
 		process.platform = 'win32';
 		grunt.file.read = function (file) {
-			if (path.normalize(file) == path.normalize(windowsFile)) {
+			if (path.normalize(file) == path.normalize(source)) {
 				return '';
 			}
 			return read.apply(this, arguments);
 		};
-		grunt.file.write = function (file) {
-			if (file == TEMP + '/' + windowsFileSanitized) {
-				sanitizedSource = true;
-				return;
-			} else if (file == TEMP
-					+ '/grunt-template-jasmine-istanbul/reporter.js') {
-				sanitizedReporter = true;
-				return;
-			}
-			return write.apply(this, arguments);
-		};
+		grunt.file.write = function () {};
 		// process
 		this.template.process(grunt, this.task, this.context);
-		test.ok(sanitizedSource, 'should have sanitized source');
-		test.ok(sanitizedReporter, 'should have sanitized reporter');
+		test.equal(this.context.scripts.src[0], sourceUri,
+				'should have generated source URI');
+		test.equal(this.context.scripts.reporters[0], reporterUri,
+				'should have generated reporter URI');
 		// uninstall mocks
 		process.platform = platform;
+		grunt.file.read = read;
+		grunt.file.write = write;
+		test.done();
+	},
+	'shouldAccountForOutfile': function (test) {
+		var source = 's.js';
+		var sourceUri = '../' + TEMP + '/' + source;
+		var reporterUri = '../' + TEMP
+				+ '/grunt-template-jasmine-istanbul/reporter.js';
+		this.context.outfile = 'target/SpecRunner.html';
+		this.context.scripts.src.push('../' + source);
+		// backup mocks
+		var read = grunt.file.read;
+		var write = grunt.file.write;
+		// install mocks
+		grunt.file.read = function (file) {
+			if (path.normalize(file) == path.normalize(source)) {
+				return '';
+			}
+			return read.apply(this, arguments);
+		};
+		grunt.file.write = function () {};
+		// process
+		this.template.process(grunt, this.task, this.context);
+		test.equal(this.context.scripts.src[0], sourceUri,
+				'should account for outfile in source URI');
+		test.equal(this.context.scripts.reporters[0], reporterUri,
+				'should account for outfile in reporter URI');
+		// uninstall mocks
 		grunt.file.read = read;
 		grunt.file.write = write;
 		test.done();

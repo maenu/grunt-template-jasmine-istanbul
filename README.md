@@ -161,6 +161,7 @@ If your mixed-in template simply includes the sources, as the default template d
 If your mixed-in template loads the sources differently, e.g. directly from the file system, you may need to reconfigure the mixed-in template.
 
 ## Change Log
+ * v0.3.0, 02.02.14, fixes #18 and #26, now requires grunt-contrib-jasmine v0.6.0
  * v0.2.6, 02.02.14, merged #13 from @llacroix, windows paths are converted to URIs
  * v0.2.5, 10.08.13, reporter is now moved to and loaded from jasmine's temporary directory, fixes #11
  * v0.2.4, 26.05.13, merged #12 from @kayhadrin, instrumented versions of files loaded via absolute paths on windows are now created at a valid path

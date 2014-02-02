@@ -68,7 +68,7 @@ exports['reporter'] = {
 	},
 	'shouldSendMessageToPhantom': function (test) {
 		var reporter = jasmine.reporters[0];
-		reporter.reportRunnerResults();
+		reporter.jasmineDone();
 		test.strictEqual(phantom.messages.length, 1, 'should send message');
 		var message = phantom.messages[0];
 		test.equal(message.event, 'jasmine.coverage',
@@ -81,7 +81,7 @@ exports['reporter'] = {
 		var oldCoverage = __coverage__;
 		__coverage__ = null;
 		var reporter = jasmine.reporters[0];
-		reporter.reportRunnerResults();
+		reporter.jasmineDone();
 		test.strictEqual(phantom.messages.length, 0, 'should not send message');
 		__coverage__ = oldCoverage;
 		test.done();

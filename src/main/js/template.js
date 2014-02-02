@@ -15,6 +15,19 @@ var DEFAULT_TEMPLATE = __dirname + '/../../../../grunt-contrib-jasmine/tasks/'
 		+ 'jasmine/templates/DefaultRunner.tmpl';
 
 /**
+ * Gets an URI from a file path. Accounts for Windows paths.
+ *
+ * @method getUri
+ *
+ * @param {String} file The file path
+ *
+ * @return {String} The URI for the specified file path
+ */
+var getUri = function (file) {
+	return file.replace(/\\{1,2}/g, '/');
+};
+
+/**
  * Instruments the specified sources and moves the instrumented sources to the
  * temporary location, recreating the original directory structure.
  *
@@ -30,15 +43,15 @@ var instrument = function (sources, tmp) {
 	var instrumenter = new istanbul.Instrumenter();
 	var instrumentedSources = [];
 	sources.forEach(function (source) {
-		var sanitizedSource = source;
+		var instrumentedSource = instrumenter.instrumentSync(
+				grunt.file.read(source), source);
+		var tmpSource = source;
 		// don't try to write "C:" as part of a folder name on Windows
 		if (process.platform == 'win32') {
-			sanitizedSource = source.replace(/^([a-z]):/i, '$1');
+			tmpSource = tmpSource.replace(/^([a-z]):/i, '$1');
 		}
-		var tmpSource = path.join(tmp, sanitizedSource).replace(/\\{1,2}/g,
-				'/');
-		grunt.file.write(tmpSource, instrumenter.instrumentSync(
-				grunt.file.read(source), source));
+		tmpSource = path.join(tmp, tmpSource);
+		grunt.file.write(tmpSource, instrumentedSource);
 		instrumentedSources.push(tmpSource);
 	});
 	return instrumentedSources;
@@ -169,13 +182,22 @@ var processMixedInTemplate = function (grunt, task, context) {
  * @return {String} The template HTML source
  */
 exports.process = function (grunt, task, context) {
+	var outputDirectory = path.dirname(context.outfile);
 	// prepend coverage reporter
-	var tmpReporter = path.join(context.temp, TMP_REPORTER).replace(/\\{1,2}/g,
-			'/');
+	var tmpReporter = path.relative(outputDirectory, path.join(context.temp,
+			TMP_REPORTER));
 	grunt.file.copy(REPORTER, tmpReporter);
-	context.scripts.reporters.unshift(tmpReporter);
+	context.scripts.reporters.unshift(getUri(tmpReporter));
 	// instrument sources
-	var instrumentedSources = instrument(context.scripts.src, context.temp);
+	var sources = [];
+	context.scripts.src.forEach(function (source) {
+		sources.push(path.join(outputDirectory, source))
+	});
+	var instrumentedSources = instrument(sources, context.temp);
+	instrumentedSources.forEach(function (instrumentedSource, i) {
+		instrumentedSources[i] = getUri(path.relative(outputDirectory,
+				instrumentedSource));
+	});
 	// replace sources
 	if (context.options.replace == null || context.options.replace) {
 		context.scripts.src = instrumentedSources;
