@@ -43,13 +43,24 @@ The supported types are:
  * [`lcovonly`](http://gotwarlost.github.com/istanbul/public/apidocs/classes/LcovOnlyReport.html)
  * [`cobertura`](http://gotwarlost.github.com/istanbul/public/apidocs/classes/CoberturaReport.html)
 
+### templateOptions.files
+
+Type: `String|Array`
+Default: `**/*`
+
+A globbing pattern or multiple patterns for the source files to instrument.
+All source files that do match will be instrumented, those who don't won't.
+E.g. `['**/*', '!src/main/js/uninteresting.js']` will result in all source files being instrumented except `src/main/js/uninteresting.js`.
+
 ### templateOptions.replace
 
-Type: `Boolean`
+Type: `Boolean|Function`
 Default: `true`
 
 Whether or not the `src` scripts are replaced by the paths to their instrumented versions.
 This is useful when you want the mixed-in template to work with the original sources, and you want to serve the instrumented sources by redirecting request on the server side.
+If you don't want the sources to be replaced, set it to `false`.
+If it is a function, it receives the arguments `ìnstrumentedSource` and `source` which represent the URI to the instrumented file and the uninstrumented file respectively, relative to the directory specified by [`outfile`](https://github.com/gruntjs/grunt-contrib-jasmine#optionsoutfile).
 
 ### templateOptions.thresholds
 Type: `Object`
@@ -161,6 +172,7 @@ If your mixed-in template simply includes the sources, as the default template d
 If your mixed-in template loads the sources differently, e.g. directly from the file system, you may need to reconfigure the mixed-in template.
 
 ## Change Log
+ * v0.3.1, 02.02.14, closes #14 and #17, added `files` option and function support for `replace` option
  * v0.3.0, 02.02.14, fixes #18 and #26, now requires grunt-contrib-jasmine v0.6.0
  * v0.2.6, 02.02.14, merged #13 from @llacroix, windows paths are converted to URIs
  * v0.2.5, 10.08.13, reporter is now moved to and loaded from jasmine's temporary directory, fixes #11

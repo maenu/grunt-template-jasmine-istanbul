@@ -8,6 +8,7 @@
 var path = require('path');
 var istanbul = require('istanbul');
 var grunt = require('grunt');
+var _ = require('lodash');
 
 var REPORTER = __dirname + '/reporter.js';
 var TMP_REPORTER = 'grunt-template-jasmine-istanbul/reporter.js';
@@ -28,33 +29,29 @@ var getUri = function (file) {
 };
 
 /**
- * Instruments the specified sources and moves the instrumented sources to the
+ * Instruments the specified source and moves the instrumented source to the
  * temporary location, recreating the original directory structure.
  *
  * @private
  * @method instrument
  *
- * @param {Array} sources The paths of the original sources
+ * @param {String} source The path of the original source
  * @param {String} tmp The path to the temporary directory
  *
- * @return {Array} The paths to the instrumented sources
+ * @return {String} The path to the instrumented source
  */
-var instrument = function (sources, tmp) {
+var instrument = function (source, tmp) {
 	var instrumenter = new istanbul.Instrumenter();
-	var instrumentedSources = [];
-	sources.forEach(function (source) {
-		var instrumentedSource = instrumenter.instrumentSync(
-				grunt.file.read(source), source);
-		var tmpSource = source;
-		// don't try to write "C:" as part of a folder name on Windows
-		if (process.platform == 'win32') {
-			tmpSource = tmpSource.replace(/^([a-z]):/i, '$1');
-		}
-		tmpSource = path.join(tmp, tmpSource);
-		grunt.file.write(tmpSource, instrumentedSource);
-		instrumentedSources.push(tmpSource);
-	});
-	return instrumentedSources;
+	var instrumentedSourceText = instrumenter.instrumentSync(
+			grunt.file.read(source), source);
+	var instrumentedSource = source;
+	// don't try to write "C:" as part of a folder name on Windows
+	if (process.platform == 'win32') {
+		instrumentedSource = instrumentedSource.replace(/^([a-z]):/i, '$1');
+	}
+	instrumentedSource = path.join(tmp, instrumentedSource);
+	grunt.file.write(instrumentedSource, instrumentedSourceText);
+	return instrumentedSource;
 };
 
 /**
@@ -127,7 +124,7 @@ var checkThresholds = function (collector, options) {
 	});
 	var finalSummary = istanbul.utils.mergeSummaryObjects.apply(null,
 			summaries);
-	grunt.util._.each(options, function (threshold, metric) {
+	_.each(options, function (threshold, metric) {
 		var actual = finalSummary[metric];
 		if(!actual) {
 			grunt.warn('unrecognized metric: ' + metric);
@@ -165,7 +162,7 @@ var processMixedInTemplate = function (grunt, task, context) {
 	if (template.process) {
 		return template.process(grunt, task, mixedInContext);
 	} else {
-		return grunt.util._.template(grunt.file.read(template), mixedInContext);
+		return _.template(grunt.file.read(template), mixedInContext);
 	}
 };
 
@@ -189,18 +186,43 @@ exports.process = function (grunt, task, context) {
 	grunt.file.copy(REPORTER, tmpReporter);
 	context.scripts.reporters.unshift(getUri(tmpReporter));
 	// instrument sources
-	var sources = [];
+	var files = context.options.files || '**/*';
+	var replacements = [];
 	context.scripts.src.forEach(function (source) {
-		sources.push(path.join(outputDirectory, source))
-	});
-	var instrumentedSources = instrument(sources, context.temp);
-	instrumentedSources.forEach(function (instrumentedSource, i) {
-		instrumentedSources[i] = getUri(path.relative(outputDirectory,
+		var instrumentedSource = path.join(outputDirectory, source);
+		if (!grunt.file.isMatch(files, instrumentedSource)) {
+			return;
+		}
+		instrumentedSource = instrument(instrumentedSource, context.temp);
+		instrumentedSource = getUri(path.relative(outputDirectory,
 				instrumentedSource));
+		replacements.push({
+			from: source,
+			to: instrumentedSource
+		});
 	});
 	// replace sources
-	if (context.options.replace == null || context.options.replace) {
-		context.scripts.src = instrumentedSources;
+	if (typeof context.options.replace == 'function') {
+		replacements.forEach(function (replacement) {
+			// call replace with the original and the instrumented source paths
+			replacement.to = context.options.replace(replacement.to,
+					replacement.from);
+		});
+	}
+	if (context.options.replace != false) {
+		// replace instrumented sources and keep uninstrumented
+		context.scripts.src = context.scripts.src.map(function (source) {
+			var instrumentedSource = null;
+			replacements.forEach(function (replacement) {
+				if (replacement.from == source) {
+					instrumentedSource = replacement.to;
+				}
+			});
+			if (instrumentedSource) {
+				return instrumentedSource;
+			}
+			return source;
+		});
 	}
 	// listen to coverage event dispatched by reporter
 	task.phantomjs.on('jasmine.coverage', function (coverage) {

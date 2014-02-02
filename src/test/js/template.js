@@ -81,65 +81,6 @@ exports['template'] = {
 		test.equal(transited, true, 'should transit template options');
 		test.done();
 	},
-	'shouldGenerateUris': function (test) {
-		var source = 'C:\\some\\file.js';
-		var sourceUri = TEMP + '/C/some/file.js';
-		var reporterUri = TEMP + '/grunt-template-jasmine-istanbul/reporter.js';
-		this.context.scripts.src.push(source);
-		// backup mocks
-		var platform = process.platform;
-		var read = grunt.file.read;
-		var write = grunt.file.write;
-		// install mocks
-		process.platform = 'win32';
-		grunt.file.read = function (file) {
-			if (path.normalize(file) == path.normalize(source)) {
-				return '';
-			}
-			return read.apply(this, arguments);
-		};
-		grunt.file.write = function () {};
-		// process
-		this.template.process(grunt, this.task, this.context);
-		test.equal(this.context.scripts.src[0], sourceUri,
-				'should have generated source URI');
-		test.equal(this.context.scripts.reporters[0], reporterUri,
-				'should have generated reporter URI');
-		// uninstall mocks
-		process.platform = platform;
-		grunt.file.read = read;
-		grunt.file.write = write;
-		test.done();
-	},
-	'shouldAccountForOutfile': function (test) {
-		var source = 's.js';
-		var sourceUri = '../' + TEMP + '/' + source;
-		var reporterUri = '../' + TEMP
-				+ '/grunt-template-jasmine-istanbul/reporter.js';
-		this.context.outfile = 'target/SpecRunner.html';
-		this.context.scripts.src.push('../' + source);
-		// backup mocks
-		var read = grunt.file.read;
-		var write = grunt.file.write;
-		// install mocks
-		grunt.file.read = function (file) {
-			if (path.normalize(file) == path.normalize(source)) {
-				return '';
-			}
-			return read.apply(this, arguments);
-		};
-		grunt.file.write = function () {};
-		// process
-		this.template.process(grunt, this.task, this.context);
-		test.equal(this.context.scripts.src[0], sourceUri,
-				'should account for outfile in source URI');
-		test.equal(this.context.scripts.reporters[0], reporterUri,
-				'should account for outfile in reporter URI');
-		// uninstall mocks
-		grunt.file.read = read;
-		grunt.file.write = write;
-		test.done();
-	},
 	'coverage': {
 		'setUp': function (callback) {
 			this.context.options.coverage = TEMP + '/coverage/coverage.json';
@@ -225,16 +166,13 @@ exports['template'] = {
 		}
 	},
 	'instrumentation': {
-		'setUp': function (callback) {
-			this.context.scripts.src.push(SRC);
-			this.template.process(grunt, this.task, this.context);
-			callback();
-		},
 		'tearDown': function (callback) {
 			grunt.file.delete(TEMP);
 			callback();
 		},
 		'shouldIncludeReporter': function (test) {
+			this.context.scripts.src.push(SRC);
+			this.template.process(grunt, this.task, this.context);
 			test.equal(this.context.scripts.reporters.length, 2,
 					'should have added 1 reporter');
 			test.equal(path.normalize(this.context.scripts.reporters[0]),
@@ -244,6 +182,8 @@ exports['template'] = {
 			test.done();
 		},
 		'shouldInstrumentSource': function (test) {
+			this.context.scripts.src.push(SRC);
+			this.template.process(grunt, this.task, this.context);
 			test.equal(this.context.scripts.src.length, 1, 'should have 1 src');
 			test.equal(path.normalize(this.context.scripts.src[0]),
 					path.join(TEMP, SRC),
@@ -253,6 +193,106 @@ exports['template'] = {
 			var expected = 'if (typeof __coverage__ === \'undefined\') '
 					+ '{ __coverage__ = {}; }';
 			test.equal(found, expected, 'should be instrumented');
+			test.done();
+		},
+		'shouldGenerateUris': function (test) {
+			var source = 'C:\\some\\file.js';
+			var sourceUri = TEMP + '/C/some/file.js';
+			var reporterUri = TEMP
+					+ '/grunt-template-jasmine-istanbul/reporter.js';
+			this.context.scripts.src.push(source);
+			// backup mocks
+			var platform = process.platform;
+			var read = grunt.file.read;
+			var write = grunt.file.write;
+			// install mocks
+			process.platform = 'win32';
+			grunt.file.read = function (file) {
+				if (path.normalize(file) == path.normalize(source)) {
+					return '';
+				}
+				return read.apply(this, arguments);
+			};
+			grunt.file.write = function () {};
+			// process
+			this.template.process(grunt, this.task, this.context);
+			test.equal(this.context.scripts.src[0], sourceUri,
+					'should have generated source URI');
+			test.equal(this.context.scripts.reporters[0], reporterUri,
+					'should have generated reporter URI');
+			// uninstall mocks
+			process.platform = platform;
+			grunt.file.read = read;
+			grunt.file.write = write;
+			test.done();
+		},
+		'shouldAccountForOutfile': function (test) {
+			var source = 's.js';
+			var sourceUri = '../' + TEMP + '/' + source;
+			var reporterUri = '../' + TEMP
+					+ '/grunt-template-jasmine-istanbul/reporter.js';
+			this.context.outfile = 'target/SpecRunner.html';
+			this.context.scripts.src.push('../' + source);
+			// backup mocks
+			var read = grunt.file.read;
+			var write = grunt.file.write;
+			// install mocks
+			grunt.file.read = function (file) {
+				if (path.normalize(file) == path.normalize(source)) {
+					return '';
+				}
+				return read.apply(this, arguments);
+			};
+			grunt.file.write = function () {};
+			// process
+			this.template.process(grunt, this.task, this.context);
+			test.equal(this.context.scripts.src[0], sourceUri,
+					'should account for outfile in source URI');
+			test.equal(this.context.scripts.reporters[0], reporterUri,
+					'should account for outfile in reporter URI');
+			// uninstall mocks
+			grunt.file.read = read;
+			grunt.file.write = write;
+			test.done();
+		}
+	},
+	'files': {
+		'tearDown': function (callback) {
+			grunt.file.delete(TEMP);
+			callback();
+		},
+		'shouldInstrumentDeclaredFilesOnly': function (test) {
+			var a = 'a.js';
+			var b = 'b.js';
+			var c = 'c.js';
+			this.context.scripts.src.push(a);
+			this.context.scripts.src.push(b);
+			this.context.scripts.src.push(c);
+			this.context.options.files = ['*', '!a.js']
+			// backup mocks
+			var read = grunt.file.read;
+			var write = grunt.file.write;
+			// install mocks
+			grunt.file.read = function (file) {
+				if (path.normalize(file) == path.normalize(a)
+						|| path.normalize(file) == path.normalize(b)
+						|| path.normalize(file) == path.normalize(c)) {
+					return '';
+				}
+				return read.apply(this, arguments);
+			};
+			grunt.file.write = function () {};
+			// process
+			this.template.process(grunt, this.task, this.context);
+			test.equal(this.context.scripts.src[0], a,
+					'should not instrument a');
+			test.equal(this.context.scripts.src[1], path.join(TEMP, b),
+					'should instrument b');
+			test.equal(this.context.scripts.src[2], path.join(TEMP, c),
+					'should instrument c');
+			// uninstall mocks
+			grunt.file.read = read;
+			grunt.file.write = write;
 			test.done();
 		}
 	},
@@ -292,7 +332,20 @@ exports['template'] = {
 			test.equal(path.normalize(after[0]), path.normalize(SRC),
 					'should be at temp');
 			test.done();
-		}
+		},
+		'shouldReplaceSourceWithFunction': function (test) {
+			var replacedDirectory = 'replaced';
+			this.context.options.replace = function (source) {
+				return path.join(replacedDirectory, source);
+			};
+			var before = this.context.scripts.src;
+			this.template.process(grunt, this.task, this.context);
+			var after = this.context.scripts.src;
+			test.notEqual(after, before, 'should replace sources');
+			test.equal(after[0], path.join(replacedDirectory, TEMP, SRC),
+					'should be at replaced directory');
+			test.done();
+		},
 	},
 	'thresholds': {
 		'setUp': function (callback) {
