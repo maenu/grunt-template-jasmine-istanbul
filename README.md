@@ -49,7 +49,9 @@ Type: `Boolean`
 Default: `true`
 
 Whether or not the `src` scripts are replaced by the paths to their instrumented versions.
-This is useful when you want the mixed-in template to work with the original sources, and you want to serve the instrumented sources by redirecting request on the server side.
+This is useful in a range of scenarios, including:
+* when you want the mixed-in template to work with the original sources, and you want to serve the instrumented sources by redirecting request on the server side.
+* when your source files have already been instrumented for use with istanbul (e.g. when using the [recommended approach](https://github.com/gotwarlost/istanbul/issues/59#issuecomment-18799734) to run coverage reports on browserify bundles)
 
 ### templateOptions.thresholds
 Type: `Object`
