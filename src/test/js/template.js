@@ -190,8 +190,9 @@ exports['template'] = {
 					'should store instrumented in temp directory');
 			var instrumented = this.context.scripts.src[0];
 			var found = grunt.file.read(instrumented).split('\n')[0];
-			var expected = 'if (typeof __coverage__ === \'undefined\') '
-					+ '{ __coverage__ = {}; }';
+
+			var expected = 'if (typeof __coverage__ === \'undefined\') '+
+					'{ __coverage__ = {}; }';
 			test.equal(found, expected, 'should be instrumented');
 			test.done();
 		},
