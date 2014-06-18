@@ -14,7 +14,7 @@
 		 * @method jasmineDone
 		 */
 		jasmineDone: function () {
-			if (__coverage__) {
+			if (typeof __coverage__ !== 'undefined' && __coverage__) {
 				phantom.sendMessage('jasmine.coverage', __coverage__);
 			}
 		}
