@@ -181,10 +181,10 @@ var processMixedInTemplate = function (grunt, task, context) {
 exports.process = function (grunt, task, context) {
 	var outputDirectory = path.dirname(context.outfile);
 	// prepend coverage reporter
-	var tmpReporter = path.relative(outputDirectory, path.join(context.temp,
-			TMP_REPORTER));
+	var tmpReporter = path.join(context.temp, TMP_REPORTER);
 	grunt.file.copy(REPORTER, tmpReporter);
-	context.scripts.reporters.unshift(getUri(tmpReporter));
+	context.scripts.reporters.unshift(getUri(path.relative(outputDirectory,
+		tmpReporter)));
 	// instrument sources
 	var files = context.options.files || '**/*';
 	var replacements = [];
