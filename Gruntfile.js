@@ -10,7 +10,8 @@ module.exports = function(grunt) {
 				coverage: 'bin/coverage'
 			},
 			temp: {
-				integration: '.grunt/integration'
+				integration: '.grunt/integration',
+				outfile: '.grunt/outfile'
 			},
 			doc: 'doc'
 		},
@@ -19,6 +20,7 @@ module.exports = function(grunt) {
 			template: '<%= meta.src.test %>/js/template.js',
 			reporter: '<%= meta.src.test %>/js/reporter.js',
 			integration: '<%= meta.src.test %>/js/integration.js',
+			outfile: '<%= meta.src.test %>/js/outfile.js',
 			threshold: '<%= meta.src.test %>/js/threshold.js'
 		},
 		jasmine: {
@@ -52,6 +54,25 @@ module.exports = function(grunt) {
 							statements: 100,
 							branches: 100,
 							functions: 100
+						},
+						template: '<%= meta.src.test %>/html/integration.tmpl',
+						templateOptions: {
+							helpers: ['<%= meta.src.test %>/js/integration-helper.js']
+						}
+					}
+				}
+			},
+			// test that coverage is still collected when outfile is specified, see #33
+			outfile: {
+				src: ['<%= meta.src.test %>/js/Generator.js'],
+				options: {
+					specs: ['<%= meta.src.test %>/js/GeneratorTest.js'],
+					outfile: '.grunt/runner.html',
+					template: require('./'),
+					templateOptions: {
+						coverage: '<%= meta.temp.outfile %>/coverage.json',
+						report: {
+							type: 'text-summary'
 						},
 						template: '<%= meta.src.test %>/html/integration.tmpl',
 						templateOptions: {
@@ -167,8 +188,9 @@ module.exports = function(grunt) {
 	grunt.registerTask('test:template', ['nodeunit:template']);
 	grunt.registerTask('test:reporter', ['nodeunit:reporter']);
 	grunt.registerTask('test:integration', ['clean:temp', 'jasmine:integration', 'nodeunit:integration']);
+	grunt.registerTask('test:outfile', ['clean:temp', 'jasmine:outfile', 'nodeunit:outfile']);
 	grunt.registerTask('test:threshold', ['clean:temp', 'mock:warn:install', 'jasmine:threshold', 'nodeunit:threshold', 'mock:warn:uninstall']);
-	grunt.registerTask('test', ['test:template', 'test:reporter', 'test:integration', 'test:threshold']);
+	grunt.registerTask('test', ['test:template', 'test:reporter', 'test:integration', 'test:outfile', 'test:threshold']);
 	grunt.registerTask('test:coverage', ['clean:bin', 'test', 'report']);
 
 };
