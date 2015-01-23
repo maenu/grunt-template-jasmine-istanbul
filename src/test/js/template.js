@@ -190,9 +190,7 @@ exports['template'] = {
 					'should store instrumented in temp directory');
 			var instrumented = this.context.scripts.src[0];
 			var found = grunt.file.read(instrumented).split('\n')[1];
-
 			var expected = "var __cov_IWp9qM1GTBo1x3ZChf8cEQ = (Function('return this'))();";
-
 			test.equal(found, expected, 'should be instrumented');
 			test.done();
 		},
