@@ -162,7 +162,7 @@ var processMixedInTemplate = function (grunt, task, context) {
 	if (template.process) {
 		return template.process(grunt, task, mixedInContext);
 	} else {
-		return _.template(grunt.file.read(template), mixedInContext);
+		return _.template(grunt.file.read(template))(mixedInContext);
 	}
 };
 
