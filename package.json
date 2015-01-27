@@ -1,7 +1,7 @@
 {
   "name": "grunt-template-jasmine-istanbul",
   "description": "Code coverage template mix-in for grunt-contrib-jasmine, using istanbul",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "keywords": [
     "grunt",
     "template",
@@ -18,7 +18,7 @@
   "main": "src/main/js/template.js",
   "dependencies": {
     "istanbul": ">=0.1.30",
-    "lodash": ">=2.4.1"
+    "lodash": ">=3.0.0"
   },
   "peerDependencies": {
     "grunt": ">=0.4.0",

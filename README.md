@@ -172,6 +172,8 @@ If your mixed-in template simply includes the sources, as the default template d
 If your mixed-in template loads the sources differently, e.g. directly from the file system, you may need to reconfigure the mixed-in template.
 
 ## Change Log
+ * v0.3.2, 27.01.15, closes #36, require lodash 3
+ * v0.3.2, 23.01.15, closes #33 and #28
  * v0.3.1, 02.02.14, closes #14 and #17, added `files` option and function support for `replace` option
  * v0.3.0, 02.02.14, fixes #18 and #26, now requires grunt-contrib-jasmine v0.6.0
  * v0.2.6, 02.02.14, merged #13 from @llacroix, windows paths are converted to URIs
