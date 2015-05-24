@@ -5,7 +5,7 @@
 
 var grunt = require('grunt');
 
-exports['threshold'] = {
+exports.threshold = {
 	'shouldTransitTemplateOptions': function (test) {
 		var expected = 'expected lines coverage to be at least 101% but was 100%';
 		test.equal(grunt.warn.message, expected, 'should have warned correctly');

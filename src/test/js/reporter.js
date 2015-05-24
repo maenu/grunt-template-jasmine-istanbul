@@ -1,3 +1,4 @@
+/* global __coverage__:true */
 /**
  * Nodeunit tests for the basic template functionality.
  */
@@ -11,22 +12,21 @@ var jasmine;
 var phantom;
 
 function getJasmine () {
-	var jasmine = {
+	return {
 		reporters: [],
-		Reporter: function() {},
-		getEnv: function() {
+		Reporter: function () {},
+		getEnv: function () {
 			return {
 				addReporter: function (reporter) {
 					jasmine.reporters.push(reporter);
 				}
 			};
 		}
-	}
-	return jasmine;
+	};
 }
 
 function getPhantom () {
-	var phantom = {
+	return {
 		messages: [],
 		sendMessage: function (event, data) {
 			phantom.messages.push({
@@ -35,17 +35,18 @@ function getPhantom () {
 			});
 		}
 	};
-	return phantom;
 }
 
-exports['reporter'] = {
+exports.reporter = {
 	'setUp': function (callback) {
 		jasmine = getJasmine();
 		phantom = getPhantom();
+		/* eslint-disable no-eval */
 		// instrument and load reporter
 		eval(instrumenter.instrumentSync(
 				grunt.file.read('src/main/js/reporter.js'),
 				'src/main/js/reporter.js'));
+		/* eslint-enable no-eval */
 		callback();
 	},
 	'tearDown': function (callback) {
@@ -58,7 +59,7 @@ exports['reporter'] = {
 	},
 	'shouldNotDefineReporter': function (test) {
 		test.throws(function () {
-			return reporter;
+			return reporter; // eslint-disable-line no-undef
 		}, ReferenceError, 'should not define reporter');
 		test.done();
 	},
