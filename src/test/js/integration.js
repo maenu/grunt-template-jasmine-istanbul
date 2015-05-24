@@ -4,9 +4,8 @@
  */
 
 var grunt = require('grunt');
-var path = require('path');
 
-exports['integration'] = {
+exports.integration = {
 	'shouldTransitTemplateOptions': function (test) {
 		var file = grunt.config.get(
 				'jasmine.integration.options.templateOptions.coverage');

@@ -118,38 +118,9 @@ module.exports = function(grunt) {
 				}
 			}
 		},
-		jshint: {
-			main: '<%= meta.src.main %>/js/*.js',
-			test: '<%= meta.src.test %>/js/*.js',
+		eslint: {
+			target: ['<%= meta.src.main %>/js/*.js', '<%= meta.src.test %>/js/*.js'],
 			options: {
-				// enforce
-				bitwise: true,
-				camelcase: true,
-				curly: true,
-				eqeqeq: false,
-				forin: true,
-				immed: true,
-				indent: 4,
-				latedef: true,
-				newcap: true,
-				noarg: true,
-				noempty: true,
-				nonew: true,
-				plusplus: true,
-				quotmark: 'single',
-				undef: true,
-				unused: true,
-				strict: false, // i don't get it
-				trailing: true,
-				maxparams: 5,
-				maxdepth: 3,
-				maxstatements: 42,
-				maxcomplexity: 5,
-				maxlen: 80,
-				// relax
-				eqnull: true,
-				laxbreak: true, // break on + etc.
-				sub: true
 			}
 		}
 	});
@@ -158,7 +129,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jasmine');
 	grunt.loadNpmTasks('grunt-contrib-nodeunit');
 	grunt.loadNpmTasks('grunt-contrib-yuidoc');
-	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-eslint');
 
 	grunt.registerTask('report', 'Write coverage report', function () {
 		var istanbul = require('istanbul');
@@ -171,9 +142,9 @@ module.exports = function(grunt) {
 		});
 		reporter.writeReport(collector, true);
 	});
-	
+
 	var WARN = grunt.warn;
-	
+
 	grunt.registerTask('mock:warn:install', 'Install mock for grunt.warn()', function () {
 		grunt.warn = function(message) {
 			grunt.warn.message = message;
@@ -183,7 +154,7 @@ module.exports = function(grunt) {
 		grunt.warn = WARN;
 	});
 
-	grunt.registerTask('check', ['jshint:main', 'jshint:test']);		
+	grunt.registerTask('check', ['eslint']);
 	grunt.registerTask('doc', 'yuidoc');
 	grunt.registerTask('test:template', ['nodeunit:template']);
 	grunt.registerTask('test:reporter', ['nodeunit:reporter']);

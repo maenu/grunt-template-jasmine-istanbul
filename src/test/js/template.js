@@ -1,3 +1,4 @@
+/* global __coverage__:true */
 /**
  * Nodeunit tests for the basic template functionality.
  */
@@ -8,8 +9,6 @@ var istanbul = require('istanbul');
 
 var TEMP = '.grunt/temp';
 var SRC = 'src/test/js/Generator.js';
-var SPEC = 'src/test/js/GeneratorTest.js';
-var REPORTER = '../../main/js/reporter.js';
 var DEFAULT_TEMPLATE = './node_modules/grunt-contrib-jasmine/tasks/jasmine/'
 		+ 'templates/DefaultRunner.tmpl';
 
@@ -47,7 +46,7 @@ function getTask () {
 	};
 }
 
-exports['template'] = {
+exports.template = {
 	'setUp': function (callback) {
 		this.context = getContext();
 		this.task = getTask();
@@ -70,10 +69,10 @@ exports['template'] = {
 	},
 	'shouldTransitTemplateOptions': function (test) {
 		this.context.options.template = {
-			process: function (grunt, task, context) {
+			process: function (grunt, task, context) { // eslint-disable-line no-shadow
 				return context.options.transited;
 			}
-		}
+		};
 		this.context.options.templateOptions = {
 			transited: true
 		};
@@ -87,9 +86,9 @@ exports['template'] = {
 			this.context.options.report = TEMP + '/coverage';
 			this.registered = {};
 			this.task.phantomjs.on = (function (scope) {
-				return function (event, callback) {
+				return function (event, callbackFunc) {
 					scope.registered.event = event;
-					scope.registered.callback = callback;
+					scope.registered.callback = callbackFunc;
 				};
 			})(this);
 			callback();
@@ -190,13 +189,14 @@ exports['template'] = {
 					'should store instrumented in temp directory');
 			var instrumented = this.context.scripts.src[0];
 			var found = grunt.file.read(instrumented).split('\n')[1];
-			var expected = "var __cov_IWp9qM1GTBo1x3ZChf8cEQ = (Function('return this'))();";
-			test.equal(found, expected, 'should be instrumented');
+			found = found.split(' = ');
+			test.ok((/var __cov_/i).test(found[0]), 'should be instrumented');
+			test.equal(found[1], "(Function('return this'))();", 'should be instrumented');
 			test.done();
 		},
 		'shouldGenerateUris': function (test) {
-			var source = 'C:\\some\\file.js';
-			var sourceUri = TEMP + '/C/some/file.js';
+			var source = './some/file.js';
+			var sourceUri = TEMP + '/some/file.js';
 			var reporterUri = TEMP
 					+ '/grunt-template-jasmine-istanbul/reporter.js';
 			this.context.scripts.src.push(source);
@@ -207,7 +207,7 @@ exports['template'] = {
 			// install mocks
 			process.platform = 'win32';
 			grunt.file.read = function (file) {
-				if (path.normalize(file) == path.normalize(source)) {
+				if (path.normalize(file) === path.normalize(source)) {
 					return '';
 				}
 				return read.apply(this, arguments);
@@ -237,7 +237,7 @@ exports['template'] = {
 			var write = grunt.file.write;
 			// install mocks
 			grunt.file.read = function (file) {
-				if (path.normalize(file) == path.normalize(source)) {
+				if (path.normalize(file) === path.normalize(source)) {
 					return '';
 				}
 				return read.apply(this, arguments);
@@ -267,15 +267,15 @@ exports['template'] = {
 			this.context.scripts.src.push(a);
 			this.context.scripts.src.push(b);
 			this.context.scripts.src.push(c);
-			this.context.options.files = ['*', '!a.js']
+			this.context.options.files = ['*', '!a.js'];
 			// backup mocks
 			var read = grunt.file.read;
 			var write = grunt.file.write;
 			// install mocks
 			grunt.file.read = function (file) {
-				if (path.normalize(file) == path.normalize(a)
-						|| path.normalize(file) == path.normalize(b)
-						|| path.normalize(file) == path.normalize(c)) {
+				if (path.normalize(file) === path.normalize(a)
+						|| path.normalize(file) === path.normalize(b)
+						|| path.normalize(file) === path.normalize(c)) {
 					return '';
 				}
 				return read.apply(this, arguments);
@@ -285,9 +285,9 @@ exports['template'] = {
 			this.template.process(grunt, this.task, this.context);
 			test.equal(this.context.scripts.src[0], a,
 					'should not instrument a');
-			test.equal(this.context.scripts.src[1], path.join(TEMP, b),
+			test.equal(path.normalize(this.context.scripts.src[1]), path.join(TEMP, b),
 					'should instrument b');
-			test.equal(this.context.scripts.src[2], path.join(TEMP, c),
+			test.equal(path.normalize(this.context.scripts.src[2]), path.join(TEMP, c),
 					'should instrument c');
 			// uninstall mocks
 			grunt.file.read = read;
@@ -325,7 +325,6 @@ exports['template'] = {
 		},
 		'shouldNotReplaceSource': function (test) {
 			this.context.options.replace = false;
-			var before = this.context.scripts.src;
 			this.template.process(grunt, this.task, this.context);
 			var after = this.context.scripts.src;
 			test.equal(path.normalize(after[0]), path.normalize(SRC),
@@ -344,7 +343,7 @@ exports['template'] = {
 			test.equal(after[0], path.join(replacedDirectory, TEMP, SRC),
 					'should be at replaced directory');
 			test.done();
-		},
+		}
 	},
 	'thresholds': {
 		'setUp': function (callback) {
@@ -366,8 +365,8 @@ exports['template'] = {
 			};
 			this.coverageListener = null;
 			this.task.phantomjs.on = (function (scope) {
-				return function (event, callback) {
-					scope.coverageListener = callback;
+				return function (event, callbackFunc) {
+					scope.coverageListener = callbackFunc;
 				};
 			})(this);
 			callback();
@@ -378,7 +377,7 @@ exports['template'] = {
 			callback();
 		},
 		'shouldNotWarnWithoutOption': function (test) {
-			this.context.options.thresholds = undefined;
+			this.context.options.thresholds = undefined; // eslint-disable-line no-undefined
 			this.template.process(grunt, this.task, this.context);
 			try {
 				this.coverageListener(this.coverage);
@@ -440,7 +439,7 @@ exports['template'] = {
 			var read = grunt.file.read;
 			// install mocks
 			grunt.file.read = function (file) {
-				if (path.resolve(file) == path.resolve(
+				if (path.resolve(file) === path.resolve(
 						'../grunt-contrib-jasmine/tasks/jasmine/templates/'
 						+ 'DefaultRunner.tmpl')) {
 					redirected = true;
@@ -479,7 +478,7 @@ exports['template'] = {
 	'dynamicTemplate': {
 		'setUp': function (callback) {
 			this.context.options.template = {
-				process: function (grunt, task, context) {
+				process: function (grunt, task, context) {// eslint-disable-line no-shadow
 					return [grunt, task, context];
 				}
 			};

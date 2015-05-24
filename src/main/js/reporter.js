@@ -1,4 +1,3 @@
-/* jshint camelcase: false */
 /* globals jasmine, phantom, __coverage__ */
 /**
  * Reports the coverage results after the test have run.
@@ -12,6 +11,7 @@
 		 * Reports the coverage variable by dispatching a message from phantom.
 		 *
 		 * @method jasmineDone
+		 * @return {void}
 		 */
 		jasmineDone: function () {
 			if (__coverage__) {

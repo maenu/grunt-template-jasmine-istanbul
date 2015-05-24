@@ -1,4 +1,3 @@
-/* globals require, exports */
 /**
  * Code coverage via istanbul.
  *
@@ -46,7 +45,7 @@ var instrument = function (source, tmp) {
 			grunt.file.read(source), source);
 	var instrumentedSource = source;
 	// don't try to write "C:" as part of a folder name on Windows
-	if (process.platform == 'win32') {
+	if (process.platform === 'win32') {
 		instrumentedSource = instrumentedSource.replace(/^([a-z]):/i, '$1');
 	}
 	instrumentedSource = path.join(tmp, instrumentedSource);
@@ -62,6 +61,7 @@ var instrument = function (source, tmp) {
  *
  * @param {Object} coverage The coverage data
  * @param {String} file The path to the coverage file
+ * @return {void}
  */
 var writeCoverage = function (coverage, file) {
 	grunt.file.write(file, JSON.stringify(coverage));
@@ -77,6 +77,7 @@ var writeCoverage = function (coverage, file) {
  * @param {String} type The report type
  * @param {Object} options The report options
  * @param {Collector} collector The collector containing the coverage
+ * @return {void}
  */
 var writeReport = function (type, options, collector) {
 	istanbul.Report.create(type, options).writeReport(collector, true);
@@ -90,9 +91,10 @@ var writeReport = function (type, options, collector) {
  *
  * @param {Collector} collector The collector containing the coverage
  * @param {Object} options The options describing the reports
+ * @return {void}
  */
 var writeReports = function (collector, options) {
-	if (typeof options == 'string' || options instanceof String) {
+	if (typeof options === 'string' || options instanceof String) {
 		// default to html report at options directory
 		writeReport('html', {
 			dir: options
@@ -115,6 +117,7 @@ var writeReports = function (collector, options) {
  *
  * @param {Collector} collector The collector containing the coverage
  * @param {Object} options The options describing the thresholds
+ * @return {void}
  */
 var checkThresholds = function (collector, options) {
 	var summaries = [];
@@ -126,10 +129,10 @@ var checkThresholds = function (collector, options) {
 			summaries);
 	_.each(options, function (threshold, metric) {
 		var actual = finalSummary[metric];
-		if(!actual) {
+		if (!actual) {
 			grunt.warn('unrecognized metric: ' + metric);
 		}
-		if(actual.pct < threshold) {
+		if (actual.pct < threshold) {
 			grunt.warn('expected ' + metric + ' coverage to be at least '
 					+ threshold + '% but was ' + actual.pct + '%');
 		}
@@ -150,7 +153,7 @@ var checkThresholds = function (collector, options) {
  *
  * @return {String} The template HTML source of the mixed in template
  */
-var processMixedInTemplate = function (grunt, task, context) {
+var processMixedInTemplate = function (grunt, task, context) {// eslint-disable-line no-shadow
 	var template = context.options.template;
 	if (!template) {
 		template = DEFAULT_TEMPLATE;
@@ -178,7 +181,7 @@ var processMixedInTemplate = function (grunt, task, context) {
  *
  * @return {String} The template HTML source
  */
-exports.process = function (grunt, task, context) {
+exports.process = function (grunt, task, context) {// eslint-disable-line no-shadow
 	var outputDirectory = path.dirname(context.outfile);
 	// prepend coverage reporter
 	var tmpReporter = path.join(context.temp, TMP_REPORTER);
@@ -202,19 +205,19 @@ exports.process = function (grunt, task, context) {
 		});
 	});
 	// replace sources
-	if (typeof context.options.replace == 'function') {
+	if (typeof context.options.replace === 'function') {
 		replacements.forEach(function (replacement) {
 			// call replace with the original and the instrumented source paths
 			replacement.to = context.options.replace(replacement.to,
 					replacement.from);
 		});
 	}
-	if (context.options.replace != false) {
+	if (context.options.replace !== false) {
 		// replace instrumented sources and keep uninstrumented
 		context.scripts.src = context.scripts.src.map(function (source) {
 			var instrumentedSource = null;
 			replacements.forEach(function (replacement) {
-				if (replacement.from == source) {
+				if (replacement.from === source) {
 					instrumentedSource = replacement.to;
 				}
 			});

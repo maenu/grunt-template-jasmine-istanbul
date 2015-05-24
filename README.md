@@ -1,3 +1,8 @@
+[![NPM version][npm-image]][npm-url]
+[![build status][travis-image]][travis-url]
+[![Downloads][downloads-image]][downloads-url]
+
+
 # Code coverage template mix-in for [grunt-contrib-jasmine](https://github.com/gruntjs/grunt-contrib-jasmine), using [istanbul](https://github.com/gotwarlost/istanbul)
 
 ## Installation
@@ -181,3 +186,10 @@ If your mixed-in template loads the sources differently, e.g. directly from the 
  * v0.2.4, 26.05.13, merged #12 from @kayhadrin, instrumented versions of files loaded via absolute paths on windows are now created at a valid path
  * v0.2.3, 12.05.13, merged `thresholds` from @larsthorup #9 which can abort a build with too low coverage
  * v0.2.2, 11.05.13, added `replace` option, so it can be prevented that the original `src` option is replaced with their instrumented versions
+
+[npm-image]: https://img.shields.io/npm/v/grunt-template-jasmine-istanbul.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/grunt-template-jasmine-istanbul
+[travis-image]: https://img.shields.io/travis/maenu/grunt-template-jasmine-istanbul/master.svg?style=flat-square
+[travis-url]: https://travis-ci.org/maenu/grunt-template-jasmine-istanbul
+[downloads-image]: http://img.shields.io/npm/dm/grunt-template-jasmine-istanbul.svg?style=flat-square
+[downloads-url]: https://npmjs.org/package/grunt-template-jasmine-istanbul

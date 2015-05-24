@@ -26,11 +26,17 @@
   },
   "devDependencies": {
     "grunt": ">=0.4.0",
+    "grunt-cli": ">=0.1.13",
     "grunt-contrib-jasmine": ">=0.6.0",
     "grunt-contrib-nodeunit": ">=0.1.2",
     "grunt-contrib-clean": ">=0.4.0",
     "grunt-contrib-yuidoc": ">=0.4.0",
-    "grunt-contrib-jshint": ">=0.4.3"
+    "grunt-eslint": ">=13.0.0",
+    "eslint-config-gyandeep": ">=1.0.0"
+  },
+  "scripts": {
+    "test": "grunt test",
+    "lint": "grunt check"
   },
   "licenses": [
     {

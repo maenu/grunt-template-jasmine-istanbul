@@ -4,9 +4,8 @@
  */
 
 var grunt = require('grunt');
-var path = require('path');
 
-exports['outfile'] = {
+exports.outfile = {
 	'shouldWriteCoverage': function (test) {
 		var file = grunt.config.get(
 				'jasmine.outfile.options.templateOptions.coverage');
