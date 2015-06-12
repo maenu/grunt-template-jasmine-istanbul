@@ -1,5 +1,5 @@
 {
-	"extends": "eslint-config-gyandeep",
+	"extends": "eslint-config-ideal",
 	"env": {
 		"node": true,
 		"jasmine": true
@@ -7,7 +7,7 @@
 	"rules": {
 		"quotes": [2, "single", "avoid-escape"],
 		"strict": 0,
-		"indent": [4, "tab"],
+		"indent": [2, "tab"],
 		"newline-after-var": 0,
 		"vars-on-top": 0,
 		"space-before-function-paren": [2, "always"],

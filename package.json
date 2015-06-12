@@ -11,14 +11,17 @@
   "author": {
     "name": "maenu"
   },
+  "contributors": [
+    "Gyandeep Singh <gyandeeps@gmail.com>"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/maenu/grunt-template-jasmine-istanbul.git"
   },
   "main": "src/main/js/template.js",
   "dependencies": {
-    "istanbul": ">=0.1.30",
-    "lodash": ">=3.0.0"
+    "istanbul": "^0.3.0",
+    "lodash": "^3.0.0"
   },
   "peerDependencies": {
     "grunt": ">=0.4.0",
@@ -32,7 +35,7 @@
     "grunt-contrib-clean": ">=0.4.0",
     "grunt-contrib-yuidoc": ">=0.4.0",
     "grunt-eslint": ">=13.0.0",
-    "eslint-config-gyandeep": ">=1.0.0"
+    "eslint-config-ideal": "^0.1.0"
   },
   "scripts": {
     "test": "grunt test",
