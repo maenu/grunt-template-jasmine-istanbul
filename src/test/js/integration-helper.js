@@ -6,6 +6,7 @@ __coverage__ = {
 		b: {},
 		f: {},
 		branchMap: {},
-		fnMap: {}
+		fnMap: {},
+		statementMap: {}
 	}
 };
