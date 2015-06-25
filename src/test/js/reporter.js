@@ -80,7 +80,7 @@ exports.reporter = {
 	},
 	'shouldNotSendMessageToPhantom': function (test) {
 		var oldCoverage = __coverage__;
-		delete __coverage__;
+		__coverage__ = undefined; // eslint-disable-line no-undefined
 		var reporter = jasmine.reporters[0];
 		reporter.jasmineDone();
 		test.strictEqual(phantom.messages.length, 0, 'should not send message');
