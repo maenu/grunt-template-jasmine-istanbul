@@ -177,14 +177,15 @@ If your mixed-in template simply includes the sources, as the default template d
 If your mixed-in template loads the sources differently, e.g. directly from the file system, you may need to reconfigure the mixed-in template.
 
 ## Change Log
- * v0.3.3, 27.01.15, closes #36, require lodash 3
- * v0.3.2, 23.01.15, closes #33 and #28
- * v0.3.1, 02.02.14, closes #14 and #17, added `files` option and function support for `replace` option
- * v0.3.0, 02.02.14, fixes #18 and #26, now requires grunt-contrib-jasmine v0.6.0
- * v0.2.6, 02.02.14, merged #13 from @llacroix, windows paths are converted to URIs
- * v0.2.5, 10.08.13, reporter is now moved to and loaded from jasmine's temporary directory, fixes #11
- * v0.2.4, 26.05.13, merged #12 from @kayhadrin, instrumented versions of files loaded via absolute paths on windows are now created at a valid path
- * v0.2.3, 12.05.13, merged `thresholds` from @larsthorup #9 which can abort a build with too low coverage
+ * v0.3.4, 28.06.15, closes [#40](https://github.com/maenu/grunt-template-jasmine-istanbul/issues/40), Don't throw error in reporter if coverage was not run.
+ * v0.3.3, 27.01.15, closes [#36](https://github.com/maenu/grunt-template-jasmine-istanbul/issues/36), require lodash 3
+ * v0.3.2, 23.01.15, closes [#33](https://github.com/maenu/grunt-template-jasmine-istanbul/issues/33) and [#28](https://github.com/maenu/grunt-template-jasmine-istanbul/issues/28)
+ * v0.3.1, 02.02.14, closes [#14](https://github.com/maenu/grunt-template-jasmine-istanbul/issues/14) and [#17](https://github.com/maenu/grunt-template-jasmine-istanbul/issues/17), added `files` option and function support for `replace` option
+ * v0.3.0, 02.02.14, fixes [#18](https://github.com/maenu/grunt-template-jasmine-istanbul/issues/18) and [#26](https://github.com/maenu/grunt-template-jasmine-istanbul/issues/26), now requires grunt-contrib-jasmine v0.6.0
+ * v0.2.6, 02.02.14, merged [#13](https://github.com/maenu/grunt-template-jasmine-istanbul/issues/13) from @llacroix, windows paths are converted to URIs
+ * v0.2.5, 10.08.13, reporter is now moved to and loaded from jasmine's temporary directory, fixes [#11](https://github.com/maenu/grunt-template-jasmine-istanbul/issues/11)
+ * v0.2.4, 26.05.13, merged [#12](https://github.com/maenu/grunt-template-jasmine-istanbul/issues/12) from @kayhadrin, instrumented versions of files loaded via absolute paths on windows are now created at a valid path
+ * v0.2.3, 12.05.13, merged `thresholds` from @larsthorup [#9](https://github.com/maenu/grunt-template-jasmine-istanbul/issues/9) which can abort a build with too low coverage
  * v0.2.2, 11.05.13, added `replace` option, so it can be prevented that the original `src` option is replaced with their instrumented versions
 
 [npm-image]: https://img.shields.io/npm/v/grunt-template-jasmine-istanbul.svg?style=flat-square
