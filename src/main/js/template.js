@@ -7,7 +7,7 @@
 var path = require('path');
 var istanbul = require('istanbul');
 var grunt = require('grunt');
-var _ = require('lodash');
+var lodashTemplate = require('lodash.template');
 
 var REPORTER = __dirname + '/reporter.js';
 var TMP_REPORTER = 'grunt-template-jasmine-istanbul/reporter.js';
@@ -127,7 +127,8 @@ var checkThresholds = function (collector, options) {
 	});
 	var finalSummary = istanbul.utils.mergeSummaryObjects.apply(null,
 			summaries);
-	_.each(options, function (threshold, metric) {
+	Object.keys(options).forEach(function (metric) {
+		var threshold = options[metric];
 		var actual = finalSummary[metric];
 		if (!actual) {
 			grunt.warn('unrecognized metric: ' + metric);
@@ -165,7 +166,7 @@ var processMixedInTemplate = function (grunt, task, context) {// eslint-disable-
 	if (template.process) {
 		return template.process(grunt, task, mixedInContext);
 	} else {
-		return _.template(grunt.file.read(template))(mixedInContext);
+		return lodashTemplate(grunt.file.read(template))(mixedInContext);
 	}
 };
 
