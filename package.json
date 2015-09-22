@@ -34,8 +34,8 @@
     "grunt-contrib-nodeunit": ">=0.1.2",
     "grunt-contrib-clean": ">=0.4.0",
     "grunt-contrib-yuidoc": ">=0.4.0",
-    "grunt-eslint": ">=13.0.0",
-    "eslint-config-ideal": "^0.1.0"
+    "gruntify-eslint": "^1.0.0",
+    "eslint-config-ideal": "^1.0.0"
   },
   "scripts": {
     "test": "grunt test",
