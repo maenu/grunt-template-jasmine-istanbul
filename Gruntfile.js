@@ -129,7 +129,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jasmine');
 	grunt.loadNpmTasks('grunt-contrib-nodeunit');
 	grunt.loadNpmTasks('grunt-contrib-yuidoc');
-	grunt.loadNpmTasks('grunt-eslint');
+	grunt.loadNpmTasks('gruntify-eslint');
 
 	grunt.registerTask('report', 'Write coverage report', function () {
 		var istanbul = require('istanbul');
