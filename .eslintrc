@@ -17,6 +17,9 @@
 			"requireReturn": true,
 			"requireParamDescription": true
 		}],
-		"brace-style": [2, "1tbs", { "allowSingleLine": true }]
+		"brace-style": [2, "1tbs", { "allowSingleLine": true }],
+		"id-length": 0,
+		"quote-props": 0,
+		"lines-around-comment": 0
 	}
 }
