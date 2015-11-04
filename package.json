@@ -20,7 +20,7 @@
   },
   "main": "src/main/js/template.js",
   "dependencies": {
-    "istanbul": "^0.3.0",
+    "istanbul": "^0.4.0",
     "lodash.template": "^3.6.2"
   },
   "peerDependencies": {
