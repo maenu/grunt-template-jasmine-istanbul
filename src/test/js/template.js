@@ -451,7 +451,7 @@ exports.template = {
 			this.processed = this.template.process(grunt, this.task,
 					this.context);
 			this.expected = grunt.util._.template(
-			grunt.file.read(DEFAULT_TEMPLATE))(this.context);
+					grunt.file.read(DEFAULT_TEMPLATE))(this.context);
 			test.equal(this.processed, this.expected,
 					'should render default template');
 			test.ok(redirected, 'should have redirected the template');
@@ -469,7 +469,7 @@ exports.template = {
 		},
 		'shouldRender': function (test) {
 			this.expected = grunt.util._.template(
-			grunt.file.read(DEFAULT_TEMPLATE))(this.context);
+					grunt.file.read(DEFAULT_TEMPLATE))(this.context);
 			test.equal(this.processed, this.expected,
 					'should render transparently');
 			test.done();
