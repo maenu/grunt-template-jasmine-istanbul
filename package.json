@@ -1,7 +1,7 @@
 {
   "name": "grunt-template-jasmine-istanbul",
   "description": "Code coverage template mix-in for grunt-contrib-jasmine, using istanbul",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "keywords": [
     "grunt",
     "template",
@@ -12,7 +12,8 @@
     "name": "maenu"
   },
   "contributors": [
-    "Gyandeep Singh <gyandeeps@gmail.com>"
+    "Gyandeep Singh <gyandeeps@gmail.com>",
+    "Radu Micu <radu.micu@gmail.com>"
   ],
   "repository": {
     "type": "git",
@@ -20,22 +21,18 @@
   },
   "main": "src/main/js/template.js",
   "dependencies": {
-    "istanbul": "^0.4.0",
-    "lodash.template": "^3.6.2"
-  },
-  "peerDependencies": {
-    "grunt": ">=0.4.0",
-    "grunt-contrib-jasmine": ">=0.6.0"
+    "istanbul": "^0.4.3",
+    "lodash.template": "^4.2.5"
   },
   "devDependencies": {
-    "grunt": ">=0.4.0",
-    "grunt-cli": ">=0.1.13",
-    "grunt-contrib-jasmine": ">=0.6.0",
-    "grunt-contrib-nodeunit": ">=0.1.2",
-    "grunt-contrib-clean": ">=0.4.0",
-    "grunt-contrib-yuidoc": ">=0.4.0",
-    "gruntify-eslint": "^1.0.0",
-    "eslint-config-ideal": "^1.0.0"
+    "eslint-config-ideal": "^1.0.0",
+    "grunt": ">=1.0.1",
+    "grunt-cli": ">=1.2.0",
+    "grunt-contrib-clean": ">=1.0.0",
+    "grunt-contrib-jasmine": "^1.0.3",
+    "grunt-contrib-nodeunit": ">=1.0.0",
+    "grunt-contrib-yuidoc": ">=1.0.0",
+    "gruntify-eslint": "^1.0.0"
   },
   "scripts": {
     "test": "grunt test",
