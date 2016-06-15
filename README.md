@@ -177,7 +177,7 @@ If your mixed-in template simply includes the sources, as the default template d
 If your mixed-in template loads the sources differently, e.g. directly from the file system, you may need to reconfigure the mixed-in template.
 
 ## Change Log
- * v0.5.0, 01.06.16, Upgrade `istanbul`, `grunt`, `grunt-template-jasmine-requirejs` and dev deps to work with the latest version of Grunt 1.0.
+ * v0.5.0, 01.06.16, Upgrade `istanbul`, `grunt` and dev deps to work with the latest version of Grunt 1.0, use caret qualifier for versions
  * v0.4.0, 09.11.15, Upgrade `istanbul` and removed `lodash` to only use `lodash.template`.
  * v0.3.4, 28.06.15, closes [#40](https://github.com/maenu/grunt-template-jasmine-istanbul/issues/40), Don't throw error in reporter if coverage was not run.
  * v0.3.3, 27.01.15, closes [#36](https://github.com/maenu/grunt-template-jasmine-istanbul/issues/36), require lodash 3
