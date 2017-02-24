@@ -11,8 +11,7 @@ var lodashTemplate = require('lodash.template');
 
 var REPORTER = __dirname + '/reporter.js';
 var TMP_REPORTER = 'grunt-template-jasmine-istanbul/reporter.js';
-var DEFAULT_TEMPLATE = __dirname + '/../../../../grunt-contrib-jasmine/tasks/'
-		+ 'jasmine/templates/DefaultRunner.tmpl';
+var DEFAULT_TEMPLATE = require.resolve('grunt-contrib-jasmine/tasks/jasmine/templates/DefaultRunner.tmpl');
 
 /**
  * Gets an URI from a file path. Accounts for Windows paths.
