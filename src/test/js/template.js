@@ -3,17 +3,17 @@
  * Nodeunit tests for the basic template functionality.
  */
 
-var grunt = require('grunt');
-var path = require('path');
-var istanbul = require('istanbul');
+const grunt = require('grunt'),
+	path = require('path'),
+	istanbul = require('istanbul');
 
 var TEMP = '.grunt/temp';
 var SRC = 'src/test/js/Generator.js';
 var DEFAULT_TEMPLATE = './node_modules/grunt-contrib-jasmine/tasks/jasmine/'
 		+ 'templates/DefaultRunner.tmpl';
 
-var instrumenter = new istanbul.Instrumenter();
-var collector = new istanbul.Collector();
+var instrumenter = new istanbul.Instrumenter(),
+	collector = new istanbul.Collector();
 
 function getContext () {
 	return {
@@ -34,13 +34,15 @@ function getContext () {
 			coverage: 'h',
 			// set template since jasmine is not installed as a peer-dependency
 			template: DEFAULT_TEMPLATE
-		}
+		},
+		outfile: '',
+		favicon: ''
 	};
 }
 
 function getTask () {
 	return {
-		phantomjs: {
+		eventDispatcher: {
 			on: function () {}
 		}
 	};
@@ -85,7 +87,7 @@ exports.template = {
 			this.context.options.coverage = TEMP + '/coverage/coverage.json';
 			this.context.options.report = TEMP + '/coverage';
 			this.registered = {};
-			this.task.phantomjs.on = (function (scope) {
+			this.task.eventDispatcher.on = (function (scope) {
 				return function (event, callbackFunc) {
 					scope.registered.event = event;
 					scope.registered.callback = callbackFunc;
@@ -364,7 +366,7 @@ exports.template = {
 				}
 			};
 			this.coverageListener = null;
-			this.task.phantomjs.on = (function (scope) {
+			this.task.eventDispatcher.on = (function (scope) {
 				return function (event, callbackFunc) {
 					scope.coverageListener = callbackFunc;
 				};

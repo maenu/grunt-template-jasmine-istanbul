@@ -15,7 +15,7 @@
 		 */
 		jasmineDone: function () {
 			if (typeof __coverage__ !== 'undefined' && __coverage__) {
-				phantom.sendMessage('jasmine.coverage', __coverage__);
+				window.sendMessage('jasmine.coverage', __coverage__);
 			}
 		}
 	};

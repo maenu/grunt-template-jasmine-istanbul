@@ -4,10 +4,10 @@
  * @module grunt-template-jasmine-istanbul
  * @class template
  */
-var path = require('path');
-var istanbul = require('istanbul');
-var grunt = require('grunt');
-var lodashTemplate = require('lodash.template');
+const path = require('path'),
+	istanbul = require('istanbul'),
+	grunt = require('grunt'),
+	lodashTemplate = require('lodash.template');
 
 var REPORTER = __dirname + '/reporter.js';
 var TMP_REPORTER = 'grunt-template-jasmine-istanbul/reporter.js';
@@ -229,7 +229,7 @@ exports.process = function (grunt, task, context) {// eslint-disable-line no-sha
 		});
 	}
 	// listen to coverage event dispatched by reporter
-	task.phantomjs.on('jasmine.coverage', function (coverage) {
+	task.eventDispatcher.on('jasmine.coverage', function (coverage) {
 		var collector = new istanbul.Collector();
 		collector.add(coverage);
 		writeCoverage(coverage, context.options.coverage);

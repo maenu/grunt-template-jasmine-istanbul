@@ -25,8 +25,8 @@
     "lodash.template": "^4.2.5"
   },
   "peerDependencies": {
-    "grunt": "^1.0.1",
-    "grunt-contrib-jasmine": "^1.0.3"
+    "grunt": "^1.0.4",
+    "grunt-contrib-jasmine": "^2.0.3"
   },
   "devDependencies": {
     "eslint-config-ideal": "^1.0.0",
