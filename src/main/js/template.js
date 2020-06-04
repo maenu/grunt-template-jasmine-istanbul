@@ -4,7 +4,7 @@
  * @module grunt-template-jasmine-istanbul
  * @class template
  */
-const path = require('path'),
+var path = require('path'),
 	istanbul = require('istanbul'),
 	grunt = require('grunt'),
 	lodashTemplate = require('lodash.template');
