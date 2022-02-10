@@ -3,7 +3,7 @@
  * Nodeunit tests for the basic template functionality.
  */
 
-const grunt = require('grunt'),
+var grunt = require('grunt'),
 	path = require('path'),
 	istanbul = require('istanbul');
 

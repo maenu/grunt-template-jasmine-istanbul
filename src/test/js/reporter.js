@@ -3,9 +3,9 @@
  * Nodeunit tests for the basic template functionality.
  */
 
-const grunt = require('grunt'),
+var grunt = require('grunt'),
 	istanbul = require('istanbul');
-const instrumenter = new istanbul.Instrumenter(),
+var instrumenter = new istanbul.Instrumenter(),
 	collector = new istanbul.Collector();
 
 var jasmine;
@@ -20,12 +20,12 @@ function MockJasmine () {
 			addReporter: function (reporter) {
 				self.reporters.push(reporter);
 			}
-		}
+		};
 	};
 }
 
 function MockBrowser () {
-	this.messages = [],
+	this.messages = [];
 	this.sendMessage = function (event, data) {
 		this.messages.push({
 			event: event,
@@ -39,8 +39,9 @@ exports.reporter = {
 		jasmine = new MockJasmine();
 		sandbox = new MockBrowser();
 		/* eslint-disable no-eval */
+		/* eslint-disable no-unused-vars */
 		// instrument and load reporter
-		let window = sandbox;
+		var window = sandbox;
 		eval(instrumenter.instrumentSync(
 				grunt.file.read('src/main/js/reporter.js'),
 				'src/main/js/reporter.js'));
