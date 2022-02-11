@@ -1,7 +1,7 @@
 {
   "name": "grunt-template-jasmine-istanbul",
   "description": "Code coverage template mix-in for grunt-contrib-jasmine, using istanbul",
-  "version": "0.6.0",
+  "version": "0.6.0.1",
   "keywords": [
     "grunt",
     "template",
@@ -26,14 +26,14 @@
   },
   "peerDependencies": {
     "grunt": "^1.0.4",
-    "grunt-contrib-jasmine": "^2.0.3"
+    "grunt-contrib-jasmine": "^3.0.0"
   },
   "devDependencies": {
     "eslint-config-ideal": "^1.0.0",
     "grunt": "^1.0.4",
     "grunt-cli": "^1.2.0",
     "grunt-contrib-clean": "^1.0.0",
-    "grunt-contrib-jasmine": "^2.0.3",
+    "grunt-contrib-jasmine": "^3.0.0",
     "grunt-contrib-nodeunit": "^1.0.0",
     "grunt-contrib-yuidoc": "^1.0.0",
     "gruntify-eslint": "^1.0.0"

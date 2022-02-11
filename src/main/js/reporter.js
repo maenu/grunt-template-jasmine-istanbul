@@ -1,4 +1,4 @@
-/* globals jasmine, phantom, __coverage__ */
+/* globals jasmine, window, __coverage__ */
 /**
  * Reports the coverage results after the test have run.
  *
@@ -8,7 +8,7 @@
 (function () {
 	var reporter = {
 		/**
-		 * Reports the coverage variable by dispatching a message from phantom.
+		 * Reports the coverage variable by dispatching a message to window.
 		 *
 		 * @method jasmineDone
 		 * @return {void}
